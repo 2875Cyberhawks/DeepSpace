@@ -8,8 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Vector;
 
 // The act of driving the robot
@@ -20,21 +20,15 @@ public class Drive extends Command {
     private static final double[][] RELATIVE_ANGLES = {{TURN_ANGLE, 90 + TURN_ANGLE}, // The angle of each wheel when turning
         {-TURN_ANGLE, TURN_ANGLE - 180}};
 
-    public static final double TURN_SPEED = .75; // The maximum speed (0-1) to go when turning
-
     public static final double IN_DEAD = .15; // The input (from 0-1) required to actually make the robot respond
 
     public static final double TURN_ERR_DEAD = 5/360; // The error (from 0-1) required for the robot to automatically adjust the angle
 
-    public static final double MIN_ANG_ROT = 35; // How fast the robot has to be rotating (in deg/sec) for the rotation to be considered intentional
+    public static final double MIN_ANG_ROT = .1; // How fast the robot has to be rotating (in deg/sec) for the rotation to be considered intentional
 
-    private static final double TURN_ERROR = 8; // How much the robot should respond to error
+    private static final double TURN_ERROR = 5; // How much the robot should respond to error
 
-    private double lastAngle = 0; // The last angle considered 'intentional'
-
-    private static final double MAX_ANG_ROT = .05; // The speed (deg/sec) at which anything below is considered intentionally stopped
-
-    private static final double STAT_DEAD = .1; // The maximum total speed at which the robot is considered stationary
+    private static final double MAX_ANG_ROT = 30; // The speed (deg/sec) at which anything below is considered intentionally stopped
 
     // Creates the drive object
     public Drive()
@@ -82,8 +76,9 @@ public class Drive extends Command {
         if (trans.getMag() < IN_DEAD) // If less than the deadzone, set to zero
             trans.setPol(0, 0);
 
-        double rotMag = Robot.joy.getZ() * TURN_SPEED; // The magnitude of the rotational velocity vector
+        double rotMag = Robot.joy.getZ(); // The magnitude of the rotational velocity vector
 
+        SmartDashboard.putNumber("turnSpeed", Robot.gyro.getRate());
 
         for (int i = 0; i < 2; i++)
         {
@@ -92,34 +87,53 @@ public class Drive extends Command {
                 Vector rot = new Vector(); // The rotational velocity vector
                 rot.setPol(rotMag, RELATIVE_ANGLES[i][j]); // Apply the magnitude and the relative angle to the 'rot' variable
                 
-                // SmartDashboard.putNumber("Angle", Robot.gyro.getAngle());
-                // SmartDashboard.putNumber("Last:", lastAngle);
-
+                SmartDashboard.putBoolean("turnTried", rot.getMag() > IN_DEAD);
+                SmartDashboard.putBoolean("turnMeant", Robot.ds.turnMeant);
+                SmartDashboard.putBoolean("isTurning", Robot.ds.isTurning());
+                
+                if (!Robot.ds.isTurning())
+                    Robot.ds.turnMeant = false;
+                
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
                     rot.setCart(0, 0); // Set the rotational velocity to zero
-
-                    if ((Math.abs(Robot.gyro.getRate()) < MIN_ANG_ROT) && (Math.abs(Robot.gyro.getRate()) > MAX_ANG_ROT)) // If the robot is moving slower than the Minimum Angle Rotation Speed and faster than the maximum
+                    
+                    if (!Robot.ds.turnMeant)
                     {
-                        double error =  (lastAngle - Robot.gyro.getAngle()) / 360; // Error between the intended angle current angle on domain [0,1]
-
-                        // SmartDashboard.putBoolean("correcting", true);
-                        // if (Math.abs(error) > TURN_ERR_DEAD) // If the error is large enough
-                        rot.setPol(TURN_ERROR * error, RELATIVE_ANGLES[i][j]); // Turn the robot with a magnitude directly related to the error
+                        double error = (Robot.ds.lastAngle - Robot.gyro.getAngle()) / 360;
+                        rot.setPol(error * TURN_ERROR, RELATIVE_ANGLES[i][j]);
                     }
-                    else
-                        lastAngle = Robot.gyro.getAngle(); // If the robot is moving quickly or is stopped, set the intended angle to the current angle
+                //     if ((Math.abs(Robot.gyro.getRate()) > MIN_ANG_ROT) && (Math.abs(Robot.gyro.getRate()) < MAX_ANG_ROT)) // If the robot is moving slower than the Minimum Angle Rotation Speed and faster than the maximum
+                //     {
+                //         double error = (lastAngle - Robot.gyro.getAngle()) / 360; // Error between the intended angle current angle on domain [0,1]
+
+                //         SmartDashboard.putBoolean("correcting", true);
+                //         SmartDashboard.putNumber("Error", error);
+                //         SmartDashboard.putNumber("Correction Magnitude", TURN_ERROR * error);
+
+                //         if (error > STAT_DEAD)
+                //             rot.setPol(TURN_ERROR * error, RELATIVE_ANGLES[i][j]); // Turn the robot with a magnitude directly related to the error
+                //     }
+                //     else
+                //         lastAngle = Robot.gyro.getAngle(); SmartDashboard.putBoolean("correcting", false); 
+                //         // If the robot is moving quickly or is stopped, set the intended angle to the current angle
                 }
                 else
-                    lastAngle = Robot.gyro.getAngle();
-            
+                {
+                    Robot.ds.turnMeant = true;
+                    Robot.ds.lastAngle = Robot.gyro.getAngle(); 
+                    SmartDashboard.putNumber("error", -20);
+                }
+                
+                rot.scale(rot.getMag());
+
                 Vector total = Vector.add(rot, trans); // Add the rotational and translational vector
 
-                total.scale(1 / (Math.sqrt(1 + (TURN_SPEED * TURN_SPEED)))); // Normalize it to the maximum speed
+                total.scale(1 / (Math.sqrt(2))); // Normalize it to the maximum speed
                 double err = Robot.ds.getError(i, j);
 
 
-                if (total.getMag() > STAT_DEAD) // If the robot is not intended to be stationary
+                if (total.getMag() > IN_DEAD) // If the robot is not intended to be stationary
                 {
                     Robot.ds.setTurn(i, j, total.getAngle()); // Set the position to the angle of the vector
 

@@ -5,13 +5,18 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import frc.robot.subsystems.DriveSystem;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.I2C;
 
 // Our robot
 public class Robot extends TimedRobot
 {
     public static Joystick joy;
 
-    public static AnalogGyro gyro;
+    public static AHRS gyro;
 
     public static DriveSystem ds;
 
@@ -24,7 +29,8 @@ public class Robot extends TimedRobot
     {
         joy = new Joystick(0);
 
-        gyro = new AnalogGyro(0);
+        gyro = new AHRS(SPI.Port.kMXP);
+        
         gyro.reset();
 
         ds = new DriveSystem();
@@ -36,7 +42,10 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit()
     {
+        ds.turnMeant = false;
+        ds.lastAngle = 0;
         gyro.reset();
+        gyro.enableLogging(true);
     }
 
     // On each step during periodic:

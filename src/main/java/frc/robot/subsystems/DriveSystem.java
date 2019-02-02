@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.util.CentPot;
 import frc.robot.commands.Drive;
@@ -24,22 +25,20 @@ public class DriveSystem extends Subsystem {
     private Spark[][] turnSparks = { { new Spark(TURN_PORTS[0][0]), new Spark(TURN_PORTS[0][1]) },
             { new Spark(TURN_PORTS[1][0]), new Spark(TURN_PORTS[1][1]) } };
 
-    private static final int[][] ENC_PORTS = { { 2, 4 }, { 3, 1 } }; // Ports of the encoders
+    private static final int[][] ENC_PORTS = { { 2, 0 }, { 3, 1 } }; // Ports of the encoders
 
     private static final double[][] AVG_OFF = { { 0.2815926584972559, -0.332589036651513 },
                                                 { 0.03405286522612938, -0.01819194111990008 } }; 
 
-<<<<<<< HEAD
-    public AnalogPotentiometer[][] encoders = {{new AnalogPotentiometer(ENC_PORTS[0][0], -360, 360 * -AVG_OFF[0][0]), // The encoders, adjusted for offset and magnitude
-            new AnalogPotentiometer(ENC_PORTS[0][1], -360, 360 * -AVG_OFF[0][1])},
-        {new AnalogPotentiometer(ENC_PORTS[1][0], -360, 360 * -AVG_OFF[1][0]),
-            new AnalogPotentiometer(ENC_PORTS[1][1], -360, 360 * -AVG_OFF[1][1])}};
-=======
     // public AnalogPotentiometer[][] encoders = { { new AnalogPotentiometer(ENC_PORTS[0][0], -1, 0),
     //         new AnalogPotentiometer(ENC_PORTS[0][1], -1, 0) },
     //         { new AnalogPotentiometer(ENC_PORTS[1][0], -1, 0),
     //                 new AnalogPotentiometer(ENC_PORTS[1][1], -1, 0) } };
->>>>>>> a71ef050175ebf84080cbb5663a7ae776f2dff71
+
+    public double lastAngle = 0; // The last angle considered 'intentional'
+    public boolean turnMeant = false;
+
+    private static final double STAT_DEAD = 5;// The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
@@ -101,6 +100,11 @@ public class DriveSystem extends Subsystem {
     public double getError(int i, int j) 
     {
         return pids[i][j].getError();
+    }
+
+    public boolean isTurning()
+    {    
+        return Math.abs(Robot.gyro.getRate()) > STAT_DEAD;
     }
 
     // Totally disable the drivetrain
