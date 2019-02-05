@@ -6,7 +6,7 @@ public class Vector
     private double x; // x mag
     private double y; // y mag
 
-    // Creates a <0, 0> vector
+    // Creates a <1, 0> vector
     public Vector() 
     {
         this.x = 0;
@@ -50,6 +50,39 @@ public class Vector
         return this.y;
     }
 
+    // Return the polar angle of the vector
+    public double getAngle() 
+    {
+        // Edge cases
+        if (x == 0)
+        {
+            if (y >= 0)
+                return 0;
+            else
+                return 180;
+        }
+        else if (y == 0)
+        {
+            if (x > 0)
+                return 90;
+            else
+                return 270;
+        }
+        else if (x > 0 && y > 0) // First Quadrant
+            return Math.toDegrees(Math.atan(Math.abs(x / y)));
+        else if (x > 0 && y < 0) // Second Quadrant
+            return Math.toDegrees(Math.atan(Math.abs(y / x))) + 90;
+        else if (x < 0 && y > 0) // Third Quadrant
+            return -Math.toDegrees(Math.atan(Math.abs(x / y)));
+        else // Fourth Quadrant
+            return -(Math.toDegrees(Math.atan(Math.abs(y / x))) + 90);
+    }
+
+    // Return the magnitude of the polar vector
+    public double getMag() 
+    {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y)); // Use pythagorean theorum to calculate magnitude
+    }
     // Sets polar coordinates with the on [-180, 180], len in some units
     public void setPol(double len, double the) 
     {
@@ -101,44 +134,33 @@ public class Vector
         this.y = -this.y;
     }
 
-    // Return the polar angle of the vector
-    public double getAngle() 
+    // Given the vector input is a square, map the vector magnitude to an inscribed circle
+    public void circlify()
     {
-        if (x == 0)
-        {
-            if (y >= 0)
-                return 0;
-            else
-                return 180;
-        }
-        else if (y == 0)
-        {
-            if (x > 0)
-                return 90;
-            else
-                return 270;
-        }
-        else if (x > 0 && y > 0) // First Quadrant
-            return Math.toDegrees(Math.atan(Math.abs(x / y)));
-        else if (x > 0 && y < 0) // Second Quadrant
-            return Math.toDegrees(Math.atan(Math.abs(y / x))) + 90;
-        else if (x < 0 && y > 0) // Third Quadrant
-            return -Math.toDegrees(Math.atan(Math.abs(x / y)));
-        else // Fourth Quadrant
-            return -(Math.toDegrees(Math.atan(Math.abs(y / x))) + 90);
-    }
+        if (x == 0 || y == 0)
+            return;
 
-    // Return the magnitude of the polar vector
-    public double getMag() 
-    {
-        return Math.sqrt((this.x * this.x) + (this.y * this.y)); // Use pythagorean theorum to calculate magnitude
+        double ref = Math.atan(Math.abs(y) / Math.abs(x)); // In Radians
+
+        if (Math.abs(x) > Math.abs(y))
+            this.scale(Math.cos(ref));
+        else
+            this.scale(Math.sin(ref));
     }
 
     // Multiply by a scalar
-    public Vector scale(double scalar) 
+    public void scale(double scalar) 
     {
+        // multiply magnitude by maximum value
+        setPol(this.getMag() * scalar, this.getAngle()); 
+    }
+
+    public Vector unit()
+    {
+        if (this.getMag() == 0)
+            return new Vector();
         Vector v = new Vector();
-        v.setPol(this.getAngle(), this.getMag() * scalar); // Divide magnitude by maximum value, return new vector
+        v.setPol(1, this.getAngle());
         return v;
     }
 

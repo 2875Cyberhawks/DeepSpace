@@ -38,7 +38,7 @@ public class DriveSystem extends Subsystem {
     public double lastAngle = 0; // The last angle considered 'intentional'
     public boolean turnMeant = false;
 
-    private static final double STAT_DEAD = 5;// The maximum total speed at which the robot is considered stationary
+    private static final double STAT_DEAD = .15;// The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
@@ -60,7 +60,6 @@ public class DriveSystem extends Subsystem {
                 pid.setInputRange(-180, 180); // A domain of [-180, 180]
                 pid.setOutputRange(-1, 1); // A range of [-1, 1]
                 pid.setContinuous(); // A continuous input
-                pid.enable(); // An enabled state
             }
         }
 
@@ -74,6 +73,13 @@ public class DriveSystem extends Subsystem {
         }
 
         driveSparks[1][0].setInverted(true); // Fix problem in random drive motor
+    }
+
+    public void enable()
+    {
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+                pids[i][j].enable();
     }
 
     // Set the command which runs when no others require the DriveSystem

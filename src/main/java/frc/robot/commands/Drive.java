@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Vector;
+import frc.robot.IO;
 
 // The act of driving the robot
 public class Drive extends Command {
@@ -20,15 +21,12 @@ public class Drive extends Command {
     private static final double[][] RELATIVE_ANGLES = {{TURN_ANGLE, 90 + TURN_ANGLE}, // The angle of each wheel when turning
         {-TURN_ANGLE, TURN_ANGLE - 180}};
 
-    public static final double IN_DEAD = .15; // The input (from 0-1) required to actually make the robot respond
-
-    public static final double TURN_ERR_DEAD = 5/360; // The error (from 0-1) required for the robot to automatically adjust the angle
-
-    public static final double MIN_ANG_ROT = .1; // How fast the robot has to be rotating (in deg/sec) for the rotation to be considered intentional
+    public static final double IN_DEAD = .2; // The input (from 0-1) required to actually make the robot respond
 
     private static final double TURN_ERROR = 5; // How much the robot should respond to error
 
-    private static final double MAX_ANG_ROT = 30; // The speed (deg/sec) at which anything below is considered intentionally stopped
+    private static final double MAX_TURN_SPEED = .75; // The maximum turning speed
+    private static final double MAX_TRANS_SPEED = .95; // The maximum translational speed
 
     // Creates the drive object
     public Drive()
@@ -40,6 +38,8 @@ public class Drive extends Command {
     @Override
     protected void initialize()
     {
+        Robot.ds.enable();
+
         // For each position
         for (int i = 0; i < 2; i++)
         {
@@ -54,6 +54,12 @@ public class Drive extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
+        if (IO.getReset())
+        {
+            Robot.gyro.reset();
+            Robot.ds.lastAngle = 0;
+        }
+
         double gyAng = Robot.gyro.getAngle(); // Angle of the gyroscope
 
         // If the gyAng > 180 or gyAng < -180, move it back onto the correct domain
@@ -66,72 +72,86 @@ public class Drive extends Command {
             gyAng -= 360;
         }
 
-        double transMag = Robot.joy.getMagnitude(); // The magnitude of the translational velocity vector
+        double transMag = IO.transMag(); // The magnitude of the translational velocity vector
 
-        double transTheta = -gyAng + Robot.joy.getDirectionDegrees(); // The angle of the translational velocity vector
+        double transTheta = -gyAng + IO.transDirection(); // The angle of the translational velocity vector
 
         Vector trans = new Vector(); // The translational velocity vector
         trans.setPol(transMag, transTheta); // Apply the magnitude and angle to the translational velocity vector
 
         if (trans.getMag() < IN_DEAD) // If less than the deadzone, set to zero
             trans.setPol(0, 0);
+        
+        trans.circlify(); // This may not be needed?
 
-        double rotMag = Robot.joy.getZ(); // The magnitude of the rotational velocity vector
+        // trans.scale(trans.getMag() * MAX_TRANS_SPEED); // Square input curve and set max speed
 
-        SmartDashboard.putNumber("turnSpeed", Robot.gyro.getRate());
+        double rotMag = IO.z(); // The magnitude of the rotational velocity vector
+
+        Vector[][] totals = {{null, null}, {null, null}}; // The total sum of the two vectors for each wheel
+        double max = 0; // The largest possible sum of the two vectors
 
         for (int i = 0; i < 2; i++)
-        {
             for (int j = 0; j < 2; j++)
             {
                 Vector rot = new Vector(); // The rotational velocity vector
                 rot.setPol(rotMag, RELATIVE_ANGLES[i][j]); // Apply the magnitude and the relative angle to the 'rot' variable
-                
-                SmartDashboard.putBoolean("turnTried", rot.getMag() > IN_DEAD);
-                SmartDashboard.putBoolean("turnMeant", Robot.ds.turnMeant);
-                SmartDashboard.putBoolean("isTurning", Robot.ds.isTurning());
-                
-                if (!Robot.ds.isTurning())
+                // Rot is already circle-ified, no need to change
+
+                if (!Robot.ds.isTurning()) // If the robot isn't turning, then any further turns aren't meant
                     Robot.ds.turnMeant = false;
-                
+
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
                     rot.setCart(0, 0); // Set the rotational velocity to zero
                     
-                    if (!Robot.ds.turnMeant)
-                    {
+                    // If the robot doesnt mean to be turning and is
+                    if (!(Robot.ds.turnMeant) && Robot.ds.isTurning())
+                    {  
+                        // Correct turning
                         double error = (Robot.ds.lastAngle - Robot.gyro.getAngle()) / 360;
                         rot.setPol(error * TURN_ERROR, RELATIVE_ANGLES[i][j]);
                     }
-                //     if ((Math.abs(Robot.gyro.getRate()) > MIN_ANG_ROT) && (Math.abs(Robot.gyro.getRate()) < MAX_ANG_ROT)) // If the robot is moving slower than the Minimum Angle Rotation Speed and faster than the maximum
-                //     {
-                //         double error = (lastAngle - Robot.gyro.getAngle()) / 360; // Error between the intended angle current angle on domain [0,1]
-
-                //         SmartDashboard.putBoolean("correcting", true);
-                //         SmartDashboard.putNumber("Error", error);
-                //         SmartDashboard.putNumber("Correction Magnitude", TURN_ERROR * error);
-
-                //         if (error > STAT_DEAD)
-                //             rot.setPol(TURN_ERROR * error, RELATIVE_ANGLES[i][j]); // Turn the robot with a magnitude directly related to the error
-                //     }
-                //     else
-                //         lastAngle = Robot.gyro.getAngle(); SmartDashboard.putBoolean("correcting", false); 
-                //         // If the robot is moving quickly or is stopped, set the intended angle to the current angle
                 }
-                else
+                else // If magnitude's greater than deadzone
                 {
-                    Robot.ds.turnMeant = true;
-                    Robot.ds.lastAngle = Robot.gyro.getAngle(); 
-                    SmartDashboard.putNumber("error", -20);
-                }
+                    Robot.ds.turnMeant = true; // The turning is meant
+                    Robot.ds.lastAngle = Robot.gyro.getAngle(); // The current angle is the right one
+                }   
                 
-                rot.scale(rot.getMag());
+                // rot.scale(MAX_TURN_SPEED * rot.getMag());
 
-                Vector total = Vector.add(rot, trans); // Add the rotational and translational vector
+                totals[i][j] = Vector.add(rot, trans); // Add the rotational and translational vector
+                if (totals[i][j].getMag() > max) // If the total is greater then the max:
+                    max = totals[i][j].getMag(); // It is the new max
 
-                total.scale(1 / (Math.sqrt(2))); // Normalize it to the maximum speed
+                // // Normalize it to the maximum speed
+                // Vector rotUnit = rot.unit();
+                // Vector transUnit = trans.unit();
+                // rotUnit.scale(MAX_TURN_SPEED);
+                // transUnit.scale(MAX_TRANS_SPEED);
+                // double sum = Vector.add(rotUnit, transUnit).getMag();
+            }
+
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                Vector total = totals[i][j];
+
+                if (max > 1)
+                    total.scale(1 / max);
+
+                // SmartDashboard.putNumber("maxSpeed", sum);
+
+                // if (sum != 0)
+                //     total.scale(1 / sum);
+
+                // total.circlify();
+
+                // SmartDashboard.putNumber("FinalX", total.x());
+                // SmartDashboard.putNumber("FinalY", total.y());
+
                 double err = Robot.ds.getError(i, j);
-
 
                 if (total.getMag() > IN_DEAD) // If the robot is not intended to be stationary
                 {
@@ -142,7 +162,6 @@ public class Drive extends Command {
                 else
                     Robot.ds.setPower(i, j, 0);
             }
-        }
     }
  
     // Make this return true when this Command no longer needs to run execute()
