@@ -14,7 +14,8 @@ import frc.robot.util.Vector;
 import frc.robot.IO;
 
 // The act of driving the robot
-public class Drive extends Command {
+public class Drive extends Command
+{
 
     private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(Robot.WIDTH, Robot.LENGTH)); // The reference angle each wheel's turning angle is based on
 
@@ -23,8 +24,8 @@ public class Drive extends Command {
 
     public static final double IN_DEAD = .2; // The input (from 0-1) required to actually make the robot respond
 
-    private static final double TURN_ERROR = 5; // How much the robot should respond to error
-
+    private static final double TURN_ERROR = 7; // How much the robot should respond to error
+    private static final double ERROR_NEG = .02; // How small the turn error must be to be negligable ([-1,1]/sec)
     private static final double MAX_TURN_SPEED = .75; // The maximum turning speed
     private static final double MAX_TRANS_SPEED = .95; // The maximum translational speed
 
@@ -53,11 +54,12 @@ public class Drive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     @Override
-    protected void execute() {
-        if (IO.getReset())
+    protected void execute()
+    {
+        if (IO.getReset()) // If reset putton pushed
         {
-            Robot.gyro.reset();
-            Robot.ds.lastAngle = 0;
+            Robot.gyro.reset(); // Reset the gyro
+            Robot.ds.lastAngle = 0; // The last intended angle is 0
         }
 
         double gyAng = Robot.gyro.getAngle(); // Angle of the gyroscope
@@ -84,12 +86,13 @@ public class Drive extends Command {
         
         trans.circlify(); // This may not be needed?
 
-        // trans.scale(trans.getMag() * MAX_TRANS_SPEED); // Square input curve and set max speed
-
         double rotMag = IO.z(); // The magnitude of the rotational velocity vector
 
         Vector[][] totals = {{null, null}, {null, null}}; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
+
+        SmartDashboard.putBoolean("isTurning", Robot.ds.isTurning());
+        SmartDashboard.putBoolean("turnMeant", Robot.ds.turnMeant);
 
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)
@@ -103,55 +106,42 @@ public class Drive extends Command {
 
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
+                    Robot.ds.grabVal();
+
                     rot.setCart(0, 0); // Set the rotational velocity to zero
-                    
+
                     // If the robot doesnt mean to be turning and is
                     if (!(Robot.ds.turnMeant) && Robot.ds.isTurning())
-                    {  
+                    { 
                         // Correct turning
                         double error = (Robot.ds.lastAngle - Robot.gyro.getAngle()) / 360;
+                        
                         rot.setPol(error * TURN_ERROR, RELATIVE_ANGLES[i][j]);
+                        
+                        Robot.ds.rmSpdCache();
                     }
                 }
                 else // If magnitude's greater than deadzone
                 {
+                    Robot.ds.rmSpdCache();
                     Robot.ds.turnMeant = true; // The turning is meant
                     Robot.ds.lastAngle = Robot.gyro.getAngle(); // The current angle is the right one
-                }   
-                
-                // rot.scale(MAX_TURN_SPEED * rot.getMag());
+                }
 
                 totals[i][j] = Vector.add(rot, trans); // Add the rotational and translational vector
                 if (totals[i][j].getMag() > max) // If the total is greater then the max:
                     max = totals[i][j].getMag(); // It is the new max
-
-                // // Normalize it to the maximum speed
-                // Vector rotUnit = rot.unit();
-                // Vector transUnit = trans.unit();
-                // rotUnit.scale(MAX_TURN_SPEED);
-                // transUnit.scale(MAX_TRANS_SPEED);
-                // double sum = Vector.add(rotUnit, transUnit).getMag();
             }
 
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)
             {
-                Vector total = totals[i][j];
+                Vector total = totals[i][j]; // The total-th total is that at i, j
 
-                if (max > 1)
-                    total.scale(1 / max);
+                if (max > 1) // If max is greater than one
+                    total.scale(1 / max); // scale all of them so that max goes to one
 
-                // SmartDashboard.putNumber("maxSpeed", sum);
-
-                // if (sum != 0)
-                //     total.scale(1 / sum);
-
-                // total.circlify();
-
-                // SmartDashboard.putNumber("FinalX", total.x());
-                // SmartDashboard.putNumber("FinalY", total.y());
-
-                double err = Robot.ds.getError(i, j);
+                double err = Robot.ds.getError(i, j); // Get error
 
                 if (total.getMag() > IN_DEAD) // If the robot is not intended to be stationary
                 {

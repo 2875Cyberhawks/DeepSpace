@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import java.util.LinkedList;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.CentPot;
 import frc.robot.commands.Drive;
 import edu.wpi.first.wpilibj.PIDController;
@@ -30,15 +32,13 @@ public class DriveSystem extends Subsystem {
     private static final double[][] AVG_OFF = { { 0.2815926584972559, -0.332589036651513 },
                                                 { 0.03405286522612938, -0.01819194111990008 } }; 
 
-    // public AnalogPotentiometer[][] encoders = { { new AnalogPotentiometer(ENC_PORTS[0][0], -1, 0),
-    //         new AnalogPotentiometer(ENC_PORTS[0][1], -1, 0) },
-    //         { new AnalogPotentiometer(ENC_PORTS[1][0], -1, 0),
-    //                 new AnalogPotentiometer(ENC_PORTS[1][1], -1, 0) } };
-
     public double lastAngle = 0; // The last angle considered 'intentional'
-    public boolean turnMeant = false;
+    private final LinkedList<Double> lastSpeeds = new LinkedList<Double>(); // The previously recorded speed
+    private final int REC_LENGTH = 80; // The number of recorded records
+    
+    public boolean turnMeant = false; // Is the robot intended to be turning?
 
-    private static final double STAT_DEAD = .15;// The maximum total speed at which the robot is considered stationary
+    private static final double STAT_DEAD = .03; // The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
@@ -54,25 +54,21 @@ public class DriveSystem extends Subsystem {
     {
         // Set all PIDS with:
         for (PIDController[] side : pids)
-        {
             for (PIDController pid : side)
             {
                 pid.setInputRange(-180, 180); // A domain of [-180, 180]
                 pid.setOutputRange(-1, 1); // A range of [-1, 1]
                 pid.setContinuous(); // A continuous input
             }
-        }
 
         // Set all sparks with:
         for (Spark[] side : turnSparks)
-        {
             for (Spark turnSpark : side)
-            {
                 turnSpark.setInverted(true); // An inverted axis
-            }
-        }
 
         driveSparks[1][0].setInverted(true); // Fix problem in random drive motor
+    
+        rmSpdCache();
     }
 
     public void enable()
@@ -92,7 +88,6 @@ public class DriveSystem extends Subsystem {
     // Set the angle of a motor at position (i, j), where top-left is (0, 0) and bottom-right is (1, 1)
     public void setTurn(int i, int j, double angle)
     {
-        // System.out.println("Sending angle "+angle+" to motor " + i + "-" + j);
         pids[i][j].setSetpoint(angle);
     }
 
@@ -108,9 +103,34 @@ public class DriveSystem extends Subsystem {
         return pids[i][j].getError();
     }
 
+    public void grabVal()
+    {
+        lastSpeeds.push(Robot.gyro.getRate());
+        lastSpeeds.removeLast();
+    }
+
+    public double turnSpd()
+    {
+        double avg = 0;
+        for (Double d: lastSpeeds)
+            avg += d;
+        return avg / REC_LENGTH;
+    }
+
+    public void rmSpdCache()
+    {
+        for (int i = 0; i < REC_LENGTH; i++)
+        {
+            lastSpeeds.push(0.0);
+
+            if (lastSpeeds.size() > REC_LENGTH)
+                lastSpeeds.remove();
+        }
+    }
+
     public boolean isTurning()
     {    
-        return Math.abs(Robot.gyro.getRate()) > STAT_DEAD;
+        return Math.abs(turnSpd()) > STAT_DEAD;
     }
 
     // Totally disable the drivetrain
