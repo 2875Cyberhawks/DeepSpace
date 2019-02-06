@@ -24,7 +24,7 @@ public class Drive extends Command
 
     public static final double IN_DEAD = .2; // The input (from 0-1) required to actually make the robot respond
 
-    private static final double TURN_ERROR = 7; // How much the robot should respond to error
+    private static final double TURN_ERROR = 4.25; // How much the robot should respond to error
     private static final double ERROR_NEG = .02; // How small the turn error must be to be negligable ([-1,1]/sec)
     private static final double MAX_TURN_SPEED = .75; // The maximum turning speed
     private static final double MAX_TRANS_SPEED = .95; // The maximum translational speed
@@ -91,6 +91,8 @@ public class Drive extends Command
         Vector[][] totals = {{null, null}, {null, null}}; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
 
+        Robot.ds.grabVal();
+
         SmartDashboard.putBoolean("isTurning", Robot.ds.isTurning());
         SmartDashboard.putBoolean("turnMeant", Robot.ds.turnMeant);
 
@@ -106,7 +108,7 @@ public class Drive extends Command
 
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
-                    Robot.ds.grabVal();
+
 
                     rot.setCart(0, 0); // Set the rotational velocity to zero
 

@@ -34,11 +34,11 @@ public class DriveSystem extends Subsystem {
 
     public double lastAngle = 0; // The last angle considered 'intentional'
     private final LinkedList<Double> lastSpeeds = new LinkedList<Double>(); // The previously recorded speed
-    private final int REC_LENGTH = 80; // The number of recorded records
+    private final int REC_LENGTH = 60; // The number of recorded records
     
     public boolean turnMeant = false; // Is the robot intended to be turning?
 
-    private static final double STAT_DEAD = .03; // The maximum total speed at which the robot is considered stationary
+    private static final double STAT_DEAD = .0125; // The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
