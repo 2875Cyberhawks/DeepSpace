@@ -108,8 +108,6 @@ public class Drive extends Command
 
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
-
-
                     rot.setCart(0, 0); // Set the rotational velocity to zero
 
                     // If the robot doesnt mean to be turning and is
