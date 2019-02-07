@@ -152,6 +152,12 @@ public class Drive extends Command
                 else
                     Robot.ds.setPower(i, j, 0);
             }
+        
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                SmartDashboard.putNumber("Error" + i + j, Robot.ds.getError(i, j));
+            }
     }
  
     // Make this return true when this Command no longer needs to run execute()

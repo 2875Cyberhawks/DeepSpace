@@ -103,6 +103,7 @@ public class DriveSystem extends Subsystem {
         return pids[i][j].getError();
     }
 
+    // Grab
     public void grabVal()
     {
         lastSpeeds.push(Robot.gyro.getRate());
