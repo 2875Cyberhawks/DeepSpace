@@ -8,6 +8,7 @@ import frc.robot.util.CentPot;
 import frc.robot.commands.Drive;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Timer;
 
 // The drivetrain itself
 public class DriveSystem extends Subsystem {
@@ -38,14 +39,14 @@ public class DriveSystem extends Subsystem {
     
     public boolean turnMeant = false; // Is the robot intended to be turning?
 
-    private static final double STAT_DEAD = .0125; // The maximum total speed at which the robot is considered stationary
+    private static final double STAT_DEAD = .07; // The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
                                    { new CentPot(ENC_PORTS[1][0], 360, 0, AVG_OFF[1][0]), 
                                         new CentPot(ENC_PORTS[1][1], 360, 0, AVG_OFF[1][0])}};
 
-    private PIDController[][] pids = { { new PIDController(P[0][0], I[0][0], D[0][0], encoders[0][0], turnSparks[0][0]),
+    public PIDController[][] pids = { { new PIDController(P[0][0], I[0][0], D[0][0], encoders[0][0], turnSparks[0][0]),
             new PIDController(P[0][1], I[0][1], D[0][1], encoders[0][1], turnSparks[0][1]) },
             { new PIDController(P[1][0], I[1][0], D[1][0], encoders[1][0], turnSparks[1][0]),
                     new PIDController(P[1][1], I[1][1], D[1][1], encoders[1][1], turnSparks[1][1]) } };
@@ -103,13 +104,14 @@ public class DriveSystem extends Subsystem {
         return pids[i][j].getError();
     }
 
-    // Grab
+    // Add the current turn speed to the cache, then remove the oldest member
     public void grabVal()
     {
         lastSpeeds.push(Robot.gyro.getRate());
         lastSpeeds.removeLast();
     }
 
+    // Return the average values of the turn speeds in the cache
     public double turnSpd()
     {
         double avg = 0;
@@ -118,6 +120,7 @@ public class DriveSystem extends Subsystem {
         return avg / REC_LENGTH;
     }
 
+    // Reset the speed cache to all zeroes
     public void rmSpdCache()
     {
         for (int i = 0; i < REC_LENGTH; i++)
@@ -129,6 +132,7 @@ public class DriveSystem extends Subsystem {
         }
     }
 
+    // returns if the robot's speed is greater than a deadzone
     public boolean isTurning()
     {    
         return Math.abs(turnSpd()) > STAT_DEAD;
