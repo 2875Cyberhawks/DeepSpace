@@ -114,10 +114,16 @@ public class Drive extends Command
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
                     double error = (Robot.ds.lastAngle - gyAng);
-                    if (error < -180)
+                    /*if (error < -180)
+                    {
                         error += 360;
+                        Robot.ds.rmSpdCache();
+                    }
                     else if (error > 180)
+                    {
                         error -= 360;
+                        Robot.ds.rmSpdCache();
+                    }*/
                     error /= 180;
                     double dV = -D * Robot.ds.turnSpd();
                     SmartDashboard.putNumber("D", dV);

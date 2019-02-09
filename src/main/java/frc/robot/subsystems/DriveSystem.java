@@ -35,7 +35,7 @@ public class DriveSystem extends Subsystem {
 
     public double lastAngle = 0; // The last angle considered 'intentional'
     private final LinkedList<Double> lastSpeeds = new LinkedList<Double>(); // The previously recorded speed
-    private final int REC_LENGTH = 30; // The number of recorded records
+    private final int REC_LENGTH = 1; // The number of recorded records
     
     public boolean turnMeant = false; // Is the robot intended to be turning?
 
