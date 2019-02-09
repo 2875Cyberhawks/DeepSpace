@@ -37,6 +37,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit()
     {
+        ds.rmSpdCache();
         ds.turnMeant = false; // Don't start turning
         ds.lastAngle = 0; // Default angle is zero
         gyro.reset(); // Reset gyro

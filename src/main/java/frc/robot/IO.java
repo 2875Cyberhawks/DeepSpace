@@ -7,12 +7,14 @@ import frc.robot.util.Vector;
 
 public class IO
 {
+    public static final double TURN_MULT = .75;
+
     public static Joystick mainJ = new Joystick(0);
     public static XboxController mainX = new XboxController(1);
 
     public static double z()
     {
-        return mainJ.getZ() + mainX.getX(Hand.kRight);
+        return TURN_MULT * (mainJ.getZ() + mainX.getX(Hand.kRight));
     }
 
     public static double x()

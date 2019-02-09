@@ -35,7 +35,7 @@ public class DriveSystem extends Subsystem {
 
     public double lastAngle = 0; // The last angle considered 'intentional'
     private final LinkedList<Double> lastSpeeds = new LinkedList<Double>(); // The previously recorded speed
-    private final int REC_LENGTH = 60; // The number of recorded records
+    private final int REC_LENGTH = 30; // The number of recorded records
     
     public boolean turnMeant = false; // Is the robot intended to be turning?
 
@@ -50,6 +50,7 @@ public class DriveSystem extends Subsystem {
             new PIDController(P[0][1], I[0][1], D[0][1], encoders[0][1], turnSparks[0][1]) },
             { new PIDController(P[1][0], I[1][0], D[1][0], encoders[1][0], turnSparks[1][0]),
                     new PIDController(P[1][1], I[1][1], D[1][1], encoders[1][1], turnSparks[1][1]) } };
+
 
     public DriveSystem()
     {
@@ -70,6 +71,8 @@ public class DriveSystem extends Subsystem {
         driveSparks[1][0].setInverted(true); // Fix problem in random drive motor
     
         rmSpdCache();
+
+        lastAngle = 0;
     }
 
     public void enable()
