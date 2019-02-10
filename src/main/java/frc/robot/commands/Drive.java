@@ -30,6 +30,7 @@ public class Drive extends Command
     private static final double MAX_TRANS_SPEED = .95; // The maximum translational speed
     private static final double MAX_SLOWDOWN_TIME = .07; // The maximum amount of time allocated to slowing the robot down after turn
     private static final double P = 1.9, D = .2;
+    private static final double MAX_CORRECT = .75;
 
 
     private static final Timer time = new Timer();
@@ -85,11 +86,10 @@ public class Drive extends Command
             gyAng -= 360;
         }
 
-        double transMag = IO.transMag(); // The magnitude of the translational velocity vector
+        Vector trans = IO.trans();
+        double transMag = IO.trans().getMag(); // The magnitude of the translational velocity vector
 
-        double transTheta = -gyAng + IO.transDirection(); // The angle of the translational velocity vector
-
-        Vector trans = new Vector(); // The translational velocity vector
+        double transTheta = -gyAng + IO.trans().getAngle(); // The angle of the translational velocity vector
         trans.setPol(transMag, transTheta); // Apply the magnitude and angle to the translational velocity vector
 
         if (trans.getMag() < IN_DEAD) // If less than the deadzone, set to zero
@@ -98,6 +98,9 @@ public class Drive extends Command
         trans.circlify(); // This may not be needed?
 
         double rotMag = IO.z(); // The magnitude of the rotational velocity vector
+
+        System.out.println("Trans: " + trans.toStringPol());
+        System.out.println("RotMg: " + rotMag);
 
         Vector[][] totals = {{null, null}, {null, null}}; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
@@ -114,23 +117,19 @@ public class Drive extends Command
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
                     double error = (Robot.ds.lastAngle - gyAng);
-                    /*if (error < -180)
-                    {
+                    if (error < -180)
                         error += 360;
-                        Robot.ds.rmSpdCache();
-                    }
                     else if (error > 180)
-                    {
                         error -= 360;
-                        Robot.ds.rmSpdCache();
-                    }*/
+                    
+                    SmartDashboard.putNumber("Error", error);
                     error /= 180;
                     double dV = -D * Robot.ds.turnSpd();
                     SmartDashboard.putNumber("D", dV);
                     double pV = error * P;
                     SmartDashboard.putNumber("P", pV);
                     double tV = dV + pV;
-                    rot.setPol(Math.abs(tV) > 1 ? 1 : tV, RELATIVE_ANGLES[i][j]);
+                    rot.setPol(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV, RELATIVE_ANGLES[i][j]);
                     SmartDashboard.putNumber("T",pV+dV);
                 }
                 else

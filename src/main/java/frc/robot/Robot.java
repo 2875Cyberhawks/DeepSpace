@@ -30,7 +30,7 @@ public class Robot extends TimedRobot
 
         ds = new DriveSystem();
 
-        System.out.println("SwerveDrive 3.0.0 is up!");
+        System.out.println("SwerveDrive 4.0.0 is up!");
     }
 
     // On teleop begin:

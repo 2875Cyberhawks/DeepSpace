@@ -7,37 +7,55 @@ import frc.robot.util.Vector;
 
 public class IO
 {
-    public static final double TURN_MULT = .75;
+    private static final double TURN_MULT = .75;
 
     public static Joystick mainJ = new Joystick(0);
     public static XboxController mainX = new XboxController(1);
 
+    private static final double MAX_CHANGE = .085;
+    private static double prevZ = 0, prevT = 0;
+    private static boolean applyCurve = true;
+
     public static double z()
     {
-        return TURN_MULT * (mainJ.getZ() + mainX.getX(Hand.kRight));
-    }
+        double in = TURN_MULT * (mainJ.getZ() + mainX.getX(Hand.kRight));
 
-    public static double x()
+        if (!applyCurve)
+            return in;
+
+        double change = -prevZ + in;
+        if (Math.abs(change) > MAX_CHANGE)
+            change = MAX_CHANGE * (change > 0 ? 1 : -1);
+        double fin = prevZ + change;
+        prevZ = fin;
+        return fin;
+    }   
+
+    private static double rawX()
     {
-        return mainJ.getX() + mainX.getX(Hand.kLeft);
+         return mainJ.getX() + mainX.getX(Hand.kLeft);
     }
 
-    public static double y()
+    private static double rawY()
     {
         return -mainJ.getY() - mainX.getY(Hand.kLeft);
     }
 
-    public static double transDirection()
+    public static Vector trans()
     {
-        Vector v = new Vector(IO.x(), IO.y());
-        return v.getAngle();
-    }
+        Vector v = new Vector(IO.rawX(), IO.rawY());
+        v.circlify();
+        
+        if (!applyCurve)
+            return v;
 
-    public static double transMag()
-    {
-        Vector v = new Vector(IO.x(), IO.y());
-        v.scale(1 / Math.sqrt(2));
-        return v.getMag();
+        double change = -prevT + v.getMag();
+        if (Math.abs(change) > MAX_CHANGE)
+            change = MAX_CHANGE * (change > 0 ? 1 : -1);
+        double fin = prevT + change;
+        prevT = fin;
+        v.scale(v.getMag() / fin);
+        return v;
     }
 
     public static boolean getReset()
