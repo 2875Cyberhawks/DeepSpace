@@ -99,8 +99,8 @@ public class Drive extends Command
 
         double rotMag = IO.z(); // The magnitude of the rotational velocity vector
 
-        System.out.println("Trans: " + trans.toStringPol());
-        System.out.println("RotMg: " + rotMag);
+        // System.out.println("Trans: " + trans.toStringPol());
+        // System.out.println("RotMg: " + rotMag);
 
         Vector[][] totals = {{null, null}, {null, null}}; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
@@ -121,16 +121,17 @@ public class Drive extends Command
                         error += 360;
                     else if (error > 180)
                         error -= 360;
-                    
-                    SmartDashboard.putNumber("Error", error);
+                    // SmartDashboard.putNumber("Error", error);
                     error /= 180;
                     double dV = -D * Robot.ds.turnSpd();
-                    SmartDashboard.putNumber("D", dV);
+                    // SmartDashboard.putNumber("D", dV);
+                    System.out.println("Derv: " + dV);
                     double pV = error * P;
-                    SmartDashboard.putNumber("P", pV);
+                    // SmartDashboard.putNumber("P", pV);
+                    pV = 0;
                     double tV = dV + pV;
                     rot.setPol(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV, RELATIVE_ANGLES[i][j]);
-                    SmartDashboard.putNumber("T",pV+dV);
+                    // SmartDashboard.putNumber("T",pV+dV);
                 }
                 else
                 {
