@@ -120,6 +120,16 @@ public class Vector
         y *= len;
     }
 
+    public void setMag(double mag)
+    {
+        this.setPol(mag, this.getAngle());
+    }
+
+    public void setAngle(double the)
+    {
+        this.setPol(this.getMag(), the);
+    }
+
     // Set cartesian coordinates
     public void setCart(double x, double y) 
     {

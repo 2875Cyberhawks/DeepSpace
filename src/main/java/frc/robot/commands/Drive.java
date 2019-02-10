@@ -13,11 +13,13 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Vector;
 import frc.robot.IO;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.subsystems.DriveSystem;
 
 // The act of driving the robot
 public class Drive extends Command
 {
-    private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(Robot.WIDTH, Robot.LENGTH)); // The reference angle each wheel's turning angle is based on
+    private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(DriveSystem.WIDTH, DriveSystem.LENGTH)); // The reference angle each wheel's turning angle is based on
 
     private static final double[][] RELATIVE_ANGLES = {{TURN_ANGLE, 90 + TURN_ANGLE}, // The angle of each wheel when turning
         {-TURN_ANGLE, TURN_ANGLE - 180}};
@@ -31,7 +33,7 @@ public class Drive extends Command
     private static final double MAX_SLOWDOWN_TIME = .07; // The maximum amount of time allocated to slowing the robot down after turn
     private static final double P = 1.9, D = .2;
     private static final double MAX_CORRECT = .75;
-
+    private static final double MIN_VOLTAGE = 6.5;
 
     private static final Timer time = new Timer();
     // Creates the drive object
@@ -45,9 +47,7 @@ public class Drive extends Command
     protected void initialize()
     {
         Robot.ds.enable();
-        time.stop();
-        time.reset();
-        Robot.ds.lastAngle = 0;
+        Robot.ds.lastAngle = Robot.gyro.getAngle();
 
         // For each position
         for (int i = 0; i < 2; i++)
@@ -114,24 +114,30 @@ public class Drive extends Command
                 rot.setPol(rotMag, RELATIVE_ANGLES[i][j]); // Apply the magnitude and the relative angle to the 'rot' variable
                 // Rot is already circle-ified, no need to change
 
+                SmartDashboard.putNumber("Raw Turn", Robot.gyro.getRate());
+                SmartDashboard.putNumber("Std Turn", Robot.ds.turnSpd());
+                SmartDashboard.putNumber("Drv Turn", -D * Robot.ds.turnSpd());
+                
                 if (rot.getMag() < IN_DEAD) // If magnitude is below the deadzone
                 {
-                    double error = (Robot.ds.lastAngle - gyAng);
-                    if (error < -180)
-                        error += 360;
-                    else if (error > 180)
-                        error -= 360;
-                    // SmartDashboard.putNumber("Error", error);
-                    error /= 180;
-                    double dV = -D * Robot.ds.turnSpd();
-                    // SmartDashboard.putNumber("D", dV);
-                    System.out.println("Derv: " + dV);
-                    double pV = error * P;
-                    // SmartDashboard.putNumber("P", pV);
-                    pV = 0;
-                    double tV = dV + pV;
-                    rot.setPol(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV, RELATIVE_ANGLES[i][j]);
-                    // SmartDashboard.putNumber("T",pV+dV);
+                    if (RobotController.getBatteryVoltage() <= MIN_VOLTAGE) // Check for underflow
+                        rot.setPol(0,0);
+                    else // Correct otherwise
+                    {
+                        double error = (Robot.ds.lastAngle - gyAng);
+                        if (error < -180)
+                            error += 360;
+                        else if (error > 180)
+                            error -= 360;
+                        error /= 180;
+                        double dV = -D * Robot.ds.turnSpd();
+                        SmartDashboard.putNumber("D", dV);
+                        double pV = error * P;
+                        SmartDashboard.putNumber("P", pV);
+                        double tV = dV + pV;
+                        rot.setPol(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV, RELATIVE_ANGLES[i][j]);
+                        SmartDashboard.putNumber("T",pV+dV);
+                    }
                 }
                 else
                 {

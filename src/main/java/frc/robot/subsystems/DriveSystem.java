@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 // The drivetrain itself
 public class DriveSystem extends Subsystem {
+    public static final double LENGTH = 20, WIDTH = 22.5;
+
     public static final double[][] P = { { .03, .04 }, { .04, .035 } }; // P Constant for each wheel
 
     public static final double[][] I = { { .001, .001 }, { .001, .001 } }; // I Constant for each wheel

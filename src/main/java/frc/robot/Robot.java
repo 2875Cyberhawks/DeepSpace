@@ -18,9 +18,6 @@ public class Robot extends TimedRobot
 
     public static DriveSystem ds;
 
-    public static final double LENGTH = 22.5; // Length between the wheels in inches
-    public static final double WIDTH = 20; // Width between the wheels in inches
-
     // On robot startup:
     @Override
     public void robotInit()
