@@ -23,6 +23,7 @@ public class Robot extends TimedRobot
     public static double getAngle()
     {
         double gyAng = gyro.getAngle();
+
         while (gyAng < -180)
         {
             gyAng += 360;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot
         {
             gyAng -= 360;
         }
+
         return gyAng;
     }
 
@@ -47,9 +49,15 @@ public class Robot extends TimedRobot
     }
 
     @Override
+    public void autonomousInit() {
+        gyro.reset();
+    }
+
+    @Override
     public void autonomousPeriodic() 
     {
-        Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90);
+        Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90, 1.8, 0);
+        ds.setVects(rots);
     }
 
     // On each step during periodic:

@@ -17,7 +17,7 @@ import frc.robot.subsystems.DriveSystem;
 // The act of driving the robot
 public class Drive extends Command
 {
-    private static final double P = 1.9, D = .2; // The P and D constants of the control loop
+    private static final double P_DEF = 1.9, D_DEF = .2; // The P and D constants of the control loop
     private static final double MAX_CORRECT = .75; // The maximum amount the correction should correct to
     private static final double MIN_VOLTAGE = 6.5; // The mimum voltage at which to perform corrections
 
@@ -29,6 +29,11 @@ public class Drive extends Command
 
     // Given a target angle and the current gyro position, return the rotational vectors needed to achieve that angle
     public static Vector[][] turnToAngle(double gyAng, double targAng)
+    {
+        return turnToAngle(gyAng, targAng, P_DEF, D_DEF);
+    }
+
+    public static Vector[][] turnToAngle(double gyAng, double targAng, double P, double D)
     {
         Vector[][] rots = new Vector[2][2];
 
@@ -83,7 +88,10 @@ public class Drive extends Command
         if (rMag == 0) // If magnitude is below the deadzone
             rots = turnToAngle(gyAng, Robot.ds.lastAngle);
         else
+        {
+            Robot.ds.lastAngle = gyAng;
             rots = DriveSystem.getRots(rMag);
+        }
 
         Vector[][] totals = new Vector[2][2]; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
