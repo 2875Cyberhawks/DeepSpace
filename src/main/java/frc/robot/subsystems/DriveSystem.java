@@ -41,12 +41,6 @@ public class DriveSystem extends Subsystem {
                                                 { 0.03405286522612938, -0.01819194111990008 } }; 
 
     public double lastAngle = 0; // The last angle considered 'intentional'
-    private final LinkedList<Double> lastSpeeds = new LinkedList<Double>(); // The previously recorded speed
-    private final int REC_LENGTH = 1; // The number of recorded records
-    
-    public boolean turnMeant = false; // Is the robot intended to be turning?
-
-    private static final double STAT_DEAD = .07; // The maximum total speed at which the robot is considered stationary
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
@@ -76,8 +70,6 @@ public class DriveSystem extends Subsystem {
                 turnSpark.setInverted(true); // An inverted axis
 
         driveSparks[1][0].setInverted(true); // Fix problem in random drive motor
-    
-        rmSpdCache();
 
         lastAngle = 0;
     }
@@ -126,40 +118,6 @@ public class DriveSystem extends Subsystem {
     public double getError(int i, int j) 
     {
         return pids[i][j].getError();
-    }
-
-    // Add the current turn speed to the cache, then remove the oldest member
-    public void grabVal()
-    {
-        lastSpeeds.push(Robot.gyro.getRate());
-        lastSpeeds.removeLast();
-    }
-
-    // Return the average values of the turn speeds in the cache
-    public double turnSpd()
-    {
-        double avg = 0;
-        for (Double d: lastSpeeds)
-            avg += d;
-        return avg / REC_LENGTH;
-    }
-
-    // Reset the speed cache to all zeroes
-    public void rmSpdCache()
-    {
-        for (int i = 0; i < REC_LENGTH; i++)
-        {
-            lastSpeeds.push(0.0);
-
-            if (lastSpeeds.size() > REC_LENGTH)
-                lastSpeeds.remove();
-        }
-    }
-
-    // returns if the robot's speed is greater than a deadzone
-    public boolean isTurning()
-    {    
-        return Math.abs(turnSpd()) > STAT_DEAD;
     }
 
     // Totally disable the drivetrain

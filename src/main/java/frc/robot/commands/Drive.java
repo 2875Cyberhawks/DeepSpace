@@ -29,6 +29,35 @@ public class Drive extends Command
         requires(Robot.ds); // Requires the drivetrain to be freed up
     }
 
+    // Given a target angle and the current gyro position, return the rotational vectors needed to achieve that angle
+    public static Vector[][] turnToAngle(double gyAng, double targAng)
+    {
+        Vector[][] rots = new Vector[2][2];
+        if (RobotController.getBatteryVoltage() <= MIN_VOLTAGE) // Check for underflow
+                rots = DriveSystem.getRots(0);
+        else // Correct otherwise
+            {
+            double error = (targAng - gyAng);
+            if (error < -180)
+                error += 360;
+            else if (error > 180)
+                error -= 360;
+            error /= 180;
+
+            double dV = -D * Robot.gyro.getRate();
+            SmartDashboard.putNumber("D", dV);
+
+            double pV = error * P;
+            SmartDashboard.putNumber("P", pV);
+
+            double tV = dV + pV;
+            rots = DriveSystem.getRots(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV);
+            SmartDashboard.putNumber("T",tV);
+        }
+
+        return rots;
+    }
+
     // Called just before this Command runs the first time
     @Override
     protected void initialize()
@@ -54,7 +83,6 @@ public class Drive extends Command
         if (IO.getReset()) // If reset putton pushed
         {
             Robot.gyro.reset(); // Reset the gyro
-            Robot.ds.rmSpdCache(); // Remove the speed cache
             Robot.ds.lastAngle = 0; // The last intended angle is 0
         }
 
@@ -87,34 +115,9 @@ public class Drive extends Command
         Vector[][] rots = DriveSystem.getRots(rMag); // The magnitude of the rotational velocity vector
 
         if (Math.abs(rMag) < IN_DEAD) // If magnitude is below the deadzone
-        {
-            if (RobotController.getBatteryVoltage() <= MIN_VOLTAGE) // Check for underflow
-                rots = DriveSystem.getRots(0);
-            else // Correct otherwise
-            {
-                double error = (Robot.ds.lastAngle - gyAng);
-                if (error < -180)
-                    error += 360;
-                else if (error > 180)
-                    error -= 360;
-                error /= 180;
-
-                double dV = -D * Robot.ds.turnSpd();
-                SmartDashboard.putNumber("D", dV);
-
-                double pV = error * P;
-                SmartDashboard.putNumber("P", pV);
-
-                double tV = dV + pV;
-                rots = DriveSystem.getRots(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV);
-                SmartDashboard.putNumber("T",pV+dV);
-            }
-        }
+            rots = turnToAngle(gyAng, Robot.ds.lastAngle);
         else
-        {
-            Robot.ds.rmSpdCache();// If magnitude's greater than deadzone
             Robot.ds.lastAngle = gyAng;
-        }
 
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)
@@ -122,8 +125,6 @@ public class Drive extends Command
 
         Vector[][] totals = new Vector[2][2]; // The total sum of the two vectors for each wheel
         double max = 0; // The largest possible sum of the two vectors
-
-        Robot.ds.grabVal();
         
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)
@@ -137,10 +138,7 @@ public class Drive extends Command
         if (max > 1)
             for (int i = 0; i < 2; i++)
                 for (int j = 0; j < 2; j++)
-                {
                     totals[i][j].scale(1 / max);
-                    
-                }
 
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)

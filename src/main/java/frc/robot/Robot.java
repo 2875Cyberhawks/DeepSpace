@@ -30,12 +30,16 @@ public class Robot extends TimedRobot
         System.out.println("SwerveDrive 4.0.0 is up!");
     }
 
+    @Override
+    public void autonomousInit() 
+    {
+        super.autonomousInit();
+    }
+
     // On teleop begin:
     @Override
     public void teleopInit()
     {
-        ds.rmSpdCache();
-        ds.turnMeant = false; // Don't start turning
         ds.lastAngle = gyro.getAngle(); // Default angle is zero
         gyro.reset(); // Reset gyro
     }
