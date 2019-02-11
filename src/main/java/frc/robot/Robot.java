@@ -36,7 +36,7 @@ public class Robot extends TimedRobot
     {
         ds.rmSpdCache();
         ds.turnMeant = false; // Don't start turning
-        ds.lastAngle = 0; // Default angle is zero
+        ds.lastAngle = gyro.getAngle(); // Default angle is zero
         gyro.reset(); // Reset gyro
     }
 

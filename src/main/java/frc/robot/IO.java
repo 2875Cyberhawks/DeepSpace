@@ -44,7 +44,6 @@ public class IO
     public static Vector trans()
     {
         Vector v = new Vector(IO.rawX(), IO.rawY());
-        v.circlify();
         
         if (!applyCurve)
             return v;

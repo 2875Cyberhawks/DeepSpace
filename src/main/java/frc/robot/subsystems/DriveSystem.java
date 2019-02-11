@@ -5,14 +5,19 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.CentPot;
+import frc.robot.util.Vector;
 import frc.robot.commands.Drive;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Timer;
 
 // The drivetrain itself
 public class DriveSystem extends Subsystem {
     public static final double LENGTH = 20, WIDTH = 22.5;
+
+    private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(LENGTH, WIDTH)); // The reference angle each wheel's turning angle is based on
+
+    private static final double[][] RELATIVE_ANGLES = {{TURN_ANGLE, 90 + TURN_ANGLE}, // The angle of each wheel when turning
+        {-TURN_ANGLE, TURN_ANGLE - 180}};
 
     public static final double[][] P = { { .03, .04 }, { .04, .035 } }; // P Constant for each wheel
 
@@ -75,6 +80,20 @@ public class DriveSystem extends Subsystem {
         rmSpdCache();
 
         lastAngle = 0;
+    }
+
+    // Return the rotational vectors to turn at a given magnitude
+    public static Vector[][] getRots(double mag)
+    {
+        Vector[][] out = new Vector[2][2];
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                out[i][j] = new Vector();
+                out[i][j].setPol(mag, RELATIVE_ANGLES[i][j]);
+                SmartDashboard.putString("rot initial" + i + j, out[i][j].toStringPol());
+            }
+        return out;
     }
 
     public void enable()

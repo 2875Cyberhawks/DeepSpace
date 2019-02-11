@@ -1,5 +1,5 @@
 package frc.robot.util;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // A 2D Vector
 public class Vector 
 {
@@ -118,7 +118,7 @@ public class Vector
 
         x *= len; // Multiply by length
         y *= len;
-    }
+        }
 
     public void setMag(double mag)
     {
