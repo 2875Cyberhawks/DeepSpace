@@ -1,6 +1,8 @@
 package frc.robot;
 
+import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
+import frc.robot.util.Vector;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -18,6 +20,20 @@ public class Robot extends TimedRobot
 
     public static DriveSystem ds;
 
+    public static double getAngle()
+    {
+        double gyAng = gyro.getAngle();
+        while (gyAng < -180)
+        {
+            gyAng += 360;
+        }
+        while (gyAng > 180)
+        {
+            gyAng -= 360;
+        }
+        return gyAng;
+    }
+
     // On robot startup:
     @Override
     public void robotInit()
@@ -31,17 +47,9 @@ public class Robot extends TimedRobot
     }
 
     @Override
-    public void autonomousInit() 
+    public void autonomousPeriodic() 
     {
-        super.autonomousInit();
-    }
-
-    // On teleop begin:
-    @Override
-    public void teleopInit()
-    {
-        ds.lastAngle = gyro.getAngle(); // Default angle is zero
-        gyro.reset(); // Reset gyro
+        Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90);
     }
 
     // On each step during periodic:

@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.LinkedList;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.CentPot;
@@ -12,6 +10,8 @@ import edu.wpi.first.wpilibj.Spark;
 
 // The drivetrain itself
 public class DriveSystem extends Subsystem {
+    public static final double MOVE_MENT = .2;
+
     public static final double LENGTH = 20, WIDTH = 22.5;
 
     private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(LENGTH, WIDTH)); // The reference angle each wheel's turning angle is based on
@@ -102,22 +102,41 @@ public class DriveSystem extends Subsystem {
         setDefaultCommand(new Drive()); // Use the drive command if no others exist
     }
 
-    // Set the angle of a motor at position (i, j), where top-left is (0, 0) and bottom-right is (1, 1)
-    public void setTurn(int i, int j, double angle)
+    public void setVects(Vector[][] vects)
     {
-        pids[i][j].setSetpoint(angle);
-    }
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                Vector vect = vects[i][j];
 
-    // Set the power of a motor at position (i, j), where top-left is (0, 0) and bottom-right is (1, 1)
-    public void setPower(int i, int j, double power)
-    {
-        driveSparks[i][j].set(power);
+                if (vect.getMag() > MOVE_MENT)
+                {
+                    double err = vect.getAngle() - encoders[i][j].get();
+
+                    if (Math.abs(err) > 90)
+                        vect.negate();
+
+                    pids[i][j].setSetpoint(vect.getAngle());
+
+                    driveSparks[i][j].set(Math.cos(Math.toRadians(err)) * vect.getMag());
+                }
+                else
+                    driveSparks[i][j].set(0);
+            }
     }
 
     // Return the error of a given PID
     public double getError(int i, int j) 
     {
         return pids[i][j].getError();
+    }
+
+    // Stop all motors
+    public void stop()
+    {
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+                driveSparks[i][j].set(0);
     }
 
     // Totally disable the drivetrain

@@ -12,6 +12,8 @@ public class IO
     public static Joystick mainJ = new Joystick(0);
     public static XboxController mainX = new XboxController(1);
 
+    private static final double IN_DEAD = .2;
+
     private static final double MAX_CHANGE = .085;
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
@@ -28,8 +30,12 @@ public class IO
             change = MAX_CHANGE * (change > 0 ? 1 : -1);
         double fin = prevZ + change;
         prevZ = fin;
-        return fin;
-    }   
+
+        if (Math.abs(fin) > IN_DEAD)
+            return fin;
+        else
+            return 0;
+    }
 
     private static double rawX()
     {
@@ -54,7 +60,11 @@ public class IO
         double fin = prevT + change;
         prevT = fin;
         v.scale(v.getMag() / fin);
-        return v;
+
+        if (v.getMag() > IN_DEAD)
+            return v;
+        else
+            return new Vector();
     }
 
     public static boolean getReset()
