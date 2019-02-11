@@ -2,12 +2,14 @@ package frc.robot;
 
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -16,9 +18,13 @@ public class Robot extends TimedRobot
 {
     public static Joystick joy;
 
+    public static XboxController xbox;
+
     public static AHRS gyro;
 
     public static DriveSystem ds;
+
+    public static LiftSystem ls;
 
     public static double getAngle()
     {
@@ -44,8 +50,9 @@ public class Robot extends TimedRobot
         gyro.reset();
 
         ds = new DriveSystem();
+        ls = new LiftSystem();
 
-        System.out.println("SwerveDrive 4.0.0 is up!");
+        System.out.println("boi.deploy() returned true\nboi.run()...");
     }
 
     @Override

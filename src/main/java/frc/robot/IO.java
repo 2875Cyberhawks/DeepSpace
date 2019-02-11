@@ -10,7 +10,8 @@ public class IO
     private static final double TURN_MULT = .75;
 
     public static Joystick mainJ = new Joystick(0);
-    public static XboxController mainX = new XboxController(1);
+
+    public static XboxController second = new XboxController(1);
 
     private static final double IN_DEAD = .2;
 
@@ -18,9 +19,13 @@ public class IO
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
 
+    private static final double LOW = 1;
+    private static final double MID = 2;
+    private static final double HIGH = 3;
+
     public static double z()
     {
-        double in = TURN_MULT * (mainJ.getZ() + mainX.getX(Hand.kRight));
+        double in = TURN_MULT * mainJ.getZ();
 
         if (!applyCurve)
             return in;
@@ -39,12 +44,12 @@ public class IO
 
     private static double rawX()
     {
-         return mainJ.getX() + mainX.getX(Hand.kLeft);
+         return mainJ.getX();
     }
 
     private static double rawY()
     {
-        return -mainJ.getY() - mainX.getY(Hand.kLeft);
+        return -mainJ.getY();
     }
 
     public static Vector trans()
@@ -69,7 +74,7 @@ public class IO
 
     public static boolean getReset()
     {
-        return mainJ.getRawButtonPressed(12) || mainX.getStartButtonPressed();
+        return mainJ.getRawButtonPressed(12);
     }
 
     public static Joystick getJoy()
@@ -79,6 +84,10 @@ public class IO
 
     public static XboxController getXbox()
     {
-        return mainX;
+        return second;
+    }
+
+    public static double lowLift(){
+        return ()
     }
 }
