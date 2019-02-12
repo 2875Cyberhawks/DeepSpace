@@ -20,6 +20,8 @@ public class IO
     private static boolean applyCurve = true;
 
     private static final double HATCH_SCALE = .3;
+    private static final double BALL_SCALE = .5;
+    private static final double INTAKE_SCALE = .4;
 
     public static double z()
     {
@@ -107,5 +109,17 @@ public class IO
 
     public static boolean getXPressed(){
         return second.getXButtonReleased() && second.getXButtonPressed();
+    }
+
+    public static double ballAxis(){
+        return Math.abs(second.getY(Hand.kRight)) > IN_DEAD ? -second.getY(Hand.kRight) * BALL_SCALE : 0;
+    }
+
+    public static double rightTrigger(){
+        return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
+    }
+
+    public static double leftTrigger(){
+        return second.getTriggerAxis(Hand.kLeft) > IN_DEAD ? second.getTriggerAxis(Hand.kLeft) : 0;
     }
 }

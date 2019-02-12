@@ -7,54 +7,50 @@
 
 package frc.robot.commands;
 
-
-import edu.wpi.first.wpilibj.command.Command;
-
 import frc.robot.IO;
 import frc.robot.Robot;
 
-public class Lift extends Command {
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.Timer;
 
-    private double goalHeight;
+public class Shoot extends Command {
 
-    private final double[] HEIGHTS = {0, 1, 2};
+    private static final double TIME = .25;
+    private Timer timer = new Timer();
 
-    public Lift() {
-        requires(Robot.ls);
+    public Shoot() {
+        requires(Robot.bs);
     }
 
-    @Override
+
     protected void initialize() {
-        Robot.ls.enable();
-        goalHeight = HEIGHTS[0];
+        Robot.bs.enable();
+        timer.start();
     }
 
-
-    @Override
+    
     protected void execute() {
+        Robot.bs.setSpeed(IO.leftTrigger(), 0);
+        Robot.bs.setSpeed(IO.leftTrigger(), 1);
 
-        goalHeight = IO.lowLift() ? HEIGHTS[0] : goalHeight;
-        goalHeight = IO.midLift() ? HEIGHTS[1] : goalHeight;
-        goalHeight = IO.highLift() ? HEIGHTS[2] : goalHeight;
-
-        Robot.ls.moveToHeight(goalHeight);
-
+        if(timer.get() > TIME)
+            Robot.bs.setSpeed(IO.leftTrigger(), 2);
     }
 
-    @Override
+    
     protected boolean isFinished() {
-        return false;
+        return IO.leftTrigger() == 0;
     }
 
-    // Called once after isFinished returns true
-    @Override
+
     protected void end() {
-        goalHeight = HEIGHTS[0];
-        Robot.ls.disable();
+        timer.reset();
+        Robot.bs.disable();
     }
-    @Override
+
+    
     protected void interrupted() {
-        goalHeight = HEIGHTS[0];
-        Robot.ls.disable();
+        timer.reset();
+        Robot.bs.disable();
     }
 }

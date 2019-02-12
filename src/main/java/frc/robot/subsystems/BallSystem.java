@@ -7,68 +7,57 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.commands.Hatch;
+import frc.robot.commands.Ball;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Encoder;
-    
 
-public class HatchSystem extends PIDSubsystem {
+public class BallSystem extends PIDSubsystem {
 
     private static final double P = 1;
     private static final double I = 1;
     private static final double D = 1;
 
-    private static final int M_PORT = 0;
-    private static final int[] SOL_PORTS = {1, 2};
-    private static final int[] ENC_PORTS = {3, 4};
+    private static final int[] ENC_PORTS = {0, 1};
+    private static final int[] MOTOR_PORTS = {2, 3, 4, 5};
 
-    private Spark motor = new Spark(M_PORT);
-
-    private Solenoid openSol = new Solenoid(SOL_PORTS[0]);
-    private Solenoid tiltSol = new Solenoid(SOL_PORTS[1]);
+    private Spark rotSpark = new Spark(MOTOR_PORTS[0]);
+    private Spark[] motors = {new Spark(MOTOR_PORTS[1]), new Spark(MOTOR_PORTS[2]), new Spark(MOTOR_PORTS[3])};
 
     private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
     
-    public HatchSystem() {
+    public BallSystem() {
         super(P, I, D);
-        setInputRange(-1, 1);
-        setOutputRange(-1, 1);
     }
 
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(new Hatch());
-    }
+        setDefaultCommand(new Ball());    }
 
     @Override
     protected double returnPIDInput() {
-        return enc.get(); //may use a more specific method
+        return enc.get(); //wip
     }
 
     @Override
     protected void usePIDOutput(double output) {
-        motor.set(output);
+        rotSpark.set(output);
     }
 
     public void move(double input){
         setSetpointRelative(input);
     }
 
-    public void toggleHatch(){
-        openSol.set(!openSol.get());
-    }
-
-    public void toggleTilt(){
-        tiltSol.set(!tiltSol.get());
+    public void setSpeed(double speed, int i){
+        motors[i].set(speed);
     }
 
     public void disable(){
         super.disable();
-        openSol.free();
-        tiltSol.free();
-        motor.set(0);
+        rotSpark.set(0);
+        for (int i = 0; i < 3; i++){
+            motors[i].set(0);
+        }
     }
 }

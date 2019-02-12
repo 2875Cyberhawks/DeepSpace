@@ -7,54 +7,48 @@
 
 package frc.robot.commands;
 
-
-import edu.wpi.first.wpilibj.command.Command;
-
 import frc.robot.IO;
 import frc.robot.Robot;
 
-public class Lift extends Command {
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
-    private double goalHeight;
+public class Ball extends Command {
 
-    private final double[] HEIGHTS = {0, 1, 2};
-
-    public Lift() {
-        requires(Robot.ls);
+    public Ball() {
+        requires(Robot.bs);
     }
 
-    @Override
+
     protected void initialize() {
-        Robot.ls.enable();
-        goalHeight = HEIGHTS[0];
+        Robot.bs.enable();
     }
 
-
-    @Override
+    
     protected void execute() {
+        Robot.bs.move(IO.ballAxis());
 
-        goalHeight = IO.lowLift() ? HEIGHTS[0] : goalHeight;
-        goalHeight = IO.midLift() ? HEIGHTS[1] : goalHeight;
-        goalHeight = IO.highLift() ? HEIGHTS[2] : goalHeight;
-
-        Robot.ls.moveToHeight(goalHeight);
-
+        if(IO.rightTrigger() > 0){
+            for (int i = 0; i < 3; i++)
+                Robot.bs.setSpeed(IO.rightTrigger(), i);
+        }
+        else if(IO.leftTrigger() > 0){
+            Scheduler.getInstance().add(new Shoot());
+        }
     }
 
-    @Override
+    
     protected boolean isFinished() {
         return false;
     }
 
-    // Called once after isFinished returns true
-    @Override
+    
     protected void end() {
-        goalHeight = HEIGHTS[0];
-        Robot.ls.disable();
+        Robot.bs.disable();
     }
-    @Override
+
+    
     protected void interrupted() {
-        goalHeight = HEIGHTS[0];
-        Robot.ls.disable();
+        Robot.bs.disable();
     }
 }
