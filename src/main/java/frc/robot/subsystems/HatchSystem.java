@@ -7,54 +7,67 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.commands.Lift;
+import frc.robot.commands.Hatch;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Encoder;
+    
 
-
-public class LiftSystem extends PIDSubsystem {
+public class HatchSystem extends PIDSubsystem {
 
     private static final double P = 1;
     private static final double I = 1;
     private static final double D = 1;
 
-    private static final int[] MOTOR_PORTS = {0, 1};
+    private static final int M_PORT = 0;
+    private static final int[] SOL_PORTS = {1, 2};
+    private static final int[] ENC_PORTS = {3, 4};
 
-    private static final int[] ENC_PORTS = {2, 3};
+    private Spark motor = new Spark(M_PORT);
 
-    private Encoder encoder = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
+    private Solenoid openSol = new Solenoid(SOL_PORTS[0]);
+    private Solenoid tiltSol = new Solenoid(SOL_PORTS[1]);
+
+    private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
     
-    private SpeedControllerGroup motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]), new Spark(MOTOR_PORTS[1]));
-
-    private static final double MAX_HEIGHT = 3;
-    private static final double DISTANCE_PER_PULSE = .01;
-        
-    public LiftSystem() {
+    public HatchSystem() {
         super(P, I, D);
-        setInputRange(0, MAX_HEIGHT);
+        setInputRange(-1, 1);
         setOutputRange(-1, 1);
-        encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
     }
 
     @Override
     public void initDefaultCommand() {
-        setDefaultCommand(new Lift());
+        setDefaultCommand(new Hatch());
     }
 
     @Override
     protected double returnPIDInput() {
-        return encoder.getDistance();
+        return enc.get(); //may use a more specific method
     }
 
     @Override
     protected void usePIDOutput(double output) {
-        motors.set(output);
+        motor.set(output);
     }
 
-    public void moveToHeight(double height){
-        setSetpoint(height);
+    public void move(double input){
+        setSetpointRelative(input);
+    }
+
+    public void toggleHatch(){
+        openSol.set(!openSol.get());
+    }
+
+    public void toggleTilt(){
+        tiltSol.set(!tiltSol.get());
+    }
+
+    public void disable(){
+        super.disable();
+        openSol.free();
+        tiltSol.free();
     }
 }

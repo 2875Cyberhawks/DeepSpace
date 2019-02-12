@@ -19,9 +19,7 @@ public class IO
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
 
-    private static final double LOW = 1;
-    private static final double MID = 2;
-    private static final double HIGH = 3;
+    private static final double HATCH_SCALE = .3;
 
     public static double z()
     {
@@ -87,7 +85,27 @@ public class IO
         return second;
     }
 
-    public static double lowLift(){
-        return ()
+    public static boolean lowLift(){
+        return second.getPOV() == 270;
+    }
+
+    public static boolean midLift(){
+        return second.getPOV() == 0 ;
+    }
+
+    public static boolean highLift(){
+        return second.getPOV() == 90;
+    } 
+
+    public static double hatchAxis(){
+        return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? -second.getY(Hand.kLeft) * HATCH_SCALE : 0;
+    }
+
+    public static boolean getYPressed(){
+        return  second.getYButtonReleased() && second.getYButtonPressed();
+    }
+
+    public static boolean getXPressed(){
+        return second.getXButtonReleased() && second.getXButtonPressed();
     }
 }

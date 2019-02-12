@@ -4,6 +4,7 @@ import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
+import frc.robot.subsystems.HatchSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -25,6 +26,8 @@ public class Robot extends TimedRobot
     public static DriveSystem ds;
 
     public static LiftSystem ls;
+
+    public static HatchSystem hs;
 
     public static double getAngle()
     {
@@ -51,6 +54,7 @@ public class Robot extends TimedRobot
 
         ds = new DriveSystem();
         ls = new LiftSystem();
+        hs = new HatchSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
     }
