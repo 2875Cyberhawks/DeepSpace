@@ -54,12 +54,13 @@ public class LiftSystem extends PIDSubsystem {
         motors.set(output);
     }
 
-    public void moveToHeight(double height){
-        setSetpoint(height);
+    public void addToHeight(double height){
+        setSetpointRelative(height * DISTANCE_PER_PULSE);
     }
 
     public void disable(){
         super.disable();
         motors.set(0);
     }
+
 }

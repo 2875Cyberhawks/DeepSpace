@@ -15,9 +15,6 @@ import frc.robot.Robot;
 
 public class Lift extends Command {
 
-    private double goalHeight;
-
-    private final double[] HEIGHTS = {0, 1, 2};
 
     public Lift() {
         requires(Robot.ls);
@@ -26,19 +23,13 @@ public class Lift extends Command {
     @Override
     protected void initialize() {
         Robot.ls.enable();
-        goalHeight = HEIGHTS[0];
     }
 
 
     @Override
     protected void execute() {
-
-        goalHeight = IO.lowLift() ? HEIGHTS[0] : goalHeight;
-        goalHeight = IO.midLift() ? HEIGHTS[1] : goalHeight;
-        goalHeight = IO.highLift() ? HEIGHTS[2] : goalHeight;
-
-        Robot.ls.moveToHeight(goalHeight);
-
+        
+        Robot.ls.addToHeight(IO.liftSpeed());
     }
 
     @Override
@@ -49,12 +40,10 @@ public class Lift extends Command {
     // Called once after isFinished returns true
     @Override
     protected void end() {
-        goalHeight = HEIGHTS[0];
         Robot.ls.disable();
     }
     @Override
     protected void interrupted() {
-        goalHeight = HEIGHTS[0];
         Robot.ls.disable();
     }
 }
