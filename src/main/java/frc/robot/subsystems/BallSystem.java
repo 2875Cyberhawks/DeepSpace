@@ -10,8 +10,8 @@ package frc.robot.subsystems;
 import frc.robot.commands.Ball;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Talon;
 
 public class BallSystem extends PIDSubsystem {
 
@@ -22,8 +22,8 @@ public class BallSystem extends PIDSubsystem {
     private static final int[] ENC_PORTS = {0, 1};
     private static final int[] MOTOR_PORTS = {2, 3, 4, 5};
 
-    private Spark rotSpark = new Spark(MOTOR_PORTS[0]);
-    private Spark[] motors = {new Spark(MOTOR_PORTS[1]), new Spark(MOTOR_PORTS[2]), new Spark(MOTOR_PORTS[3])};
+    private Talon rotSpark = new Talon(MOTOR_PORTS[0]);
+    private Talon[] motors = {new Talon(MOTOR_PORTS[1]), new Talon(MOTOR_PORTS[2]), new Talon(MOTOR_PORTS[3])};
 
     private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
     

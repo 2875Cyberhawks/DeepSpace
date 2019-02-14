@@ -10,7 +10,7 @@ package frc.robot.subsystems;
 import frc.robot.commands.Hatch;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Encoder;
     
@@ -25,7 +25,7 @@ public class HatchSystem extends PIDSubsystem {
     private static final int[] SOL_PORTS = {1, 2};
     private static final int[] ENC_PORTS = {3, 4};
 
-    private Spark motor = new Spark(M_PORT);
+    private Talon motor = new Talon(M_PORT);
 
     private Solenoid openSol = new Solenoid(SOL_PORTS[0]);
     private Solenoid tiltSol = new Solenoid(SOL_PORTS[1]);
