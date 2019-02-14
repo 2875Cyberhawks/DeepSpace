@@ -30,16 +30,16 @@ public class Shoot extends Command {
 
     
     protected void execute() {
-        Robot.bs.setSpeed(IO.leftTrigger(), 0);
-        Robot.bs.setSpeed(IO.leftTrigger(), 1);
+        Robot.bs.setSpeed(IO.shootBall(), 0);
+        Robot.bs.setSpeed(IO.shootBall(), 1);
 
         if(timer.get() > TIME)
-            Robot.bs.setSpeed(IO.leftTrigger(), 2);
+            Robot.bs.setSpeed(IO.shootBall(), 2);
     }
 
     
     protected boolean isFinished() {
-        return IO.leftTrigger() == 0;
+        return IO.shootBall() == 0;
     }
 
 

@@ -26,10 +26,10 @@ public class Hatch extends Command {
     
     protected void execute() {
 
-        if (IO.getYPressed())
+        if (IO.toggleHatch())
             Robot.hs.toggleHatch();
 
-        if (IO.getXPressed())
+        if (IO.toggleTilt())
             Robot.hs.toggleTilt();
 
         Robot.hs.move(IO.hatchAxis());
