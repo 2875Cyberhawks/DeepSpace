@@ -19,7 +19,7 @@ public class Shoot extends Command {
     private Timer timer = new Timer();
 
     public Shoot() {
-        requires(Robot.bs);
+        requires(Robot.ss);
     }
 
 
@@ -30,16 +30,27 @@ public class Shoot extends Command {
 
     
     protected void execute() {
-        Robot.bs.setSpeed(IO.shootBall(), 0);
-        Robot.bs.setSpeed(IO.shootBall(), 1);
+        if (IO.shootBall() > 0){
+            timer.reset();
+            timer.start();
+            Robot.ss.setSpeed(-IO.shootBall(), 0);
+            Robot.ss.setSpeed(IO.shootBall(), 1);
 
-        if(timer.get() > TIME)
-            Robot.bs.setSpeed(IO.shootBall(), 2);
+            if(timer.get() > TIME){
+                Robot.ss.setSpeed(IO.shootBall(), 2);
+                timer.reset();
+            }
+        }
+        else if (IO.intakeBall() > 0){
+            Robot.ss.setSpeed(IO.intakeBall(), 0);
+            Robot.ss.setSpeed(-IO.intakeBall(), 1);
+            Robot.ss.setSpeed(-IO.intakeBall(), 2);
+        }
     }
 
     
     protected boolean isFinished() {
-        return IO.shootBall() == 0;
+        return false;
     }
 
 

@@ -20,10 +20,9 @@ public class BallSystem extends PIDSubsystem {
     private static final double D = 1;
 
     private static final int[] ENC_PORTS = {0, 1};
-    private static final int[] MOTOR_PORTS = {2, 3, 4, 5};
+    private static final int MOTOR_PORT = 2;
 
-    private Talon rotSpark = new Talon(MOTOR_PORTS[0]);
-    private Talon[] motors = {new Talon(MOTOR_PORTS[1]), new Talon(MOTOR_PORTS[2]), new Talon(MOTOR_PORTS[3])};
+    private Talon rotSpark = new Talon(MOTOR_PORT);
 
     private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
     
@@ -49,15 +48,9 @@ public class BallSystem extends PIDSubsystem {
         setSetpointRelative(input);
     }
 
-    public void setSpeed(double speed, int i){
-        motors[i].set(speed);
-    }
 
     public void disable(){
         super.disable();
         rotSpark.set(0);
-        for (int i = 0; i < 3; i++){
-            motors[i].set(0);
-        }
     }
 }
