@@ -27,7 +27,7 @@ public class DriveSystem extends Subsystem {
 
     public static final int[][] DRIVE_PORTS = { { 0, 2 }, { 6, 4 } }; // Ports for the driving motors
 
-    public static final int[][] TURN_PORTS = { { 7, 1 }, { 5, 3 } }; // Ports for the turning motors
+    public static final int[][] TURN_PORTS = { { 1, 3 }, { 7, 5 } }; // Ports for the turning motors
 
     private Spark[][] driveSparks = { { new Spark(DRIVE_PORTS[0][0]), new Spark(DRIVE_PORTS[0][1]) },
             { new Spark(DRIVE_PORTS[1][0]), new Spark(DRIVE_PORTS[1][1]) } };

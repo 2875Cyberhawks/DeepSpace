@@ -21,7 +21,7 @@ public class LiftSystem extends PIDSubsystem {
     private static final double I = 1;
     private static final double D = 1;
 
-    private static final int[] MOTOR_PORTS = {0, 1};
+    private static final int[] MOTOR_PORTS = {9, 8};
 
     private static final int[] ENC_PORTS = {2, 3};
 
