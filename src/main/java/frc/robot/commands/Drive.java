@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.util.Vector;
 import frc.robot.IO;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.DriveSystem;
 // The act of driving the robot
 public class Drive extends Command
 {
-    private static final double P_DEF = 1.9, D_DEF = .2; // The P and D constants of the control loop
+    private static final double P_DEF = 1.9, D_DEF = .15; // The P and D constants of the control loop
     private static final double MAX_CORRECT = .75; // The maximum amount the correction should correct to
     private static final double MIN_VOLTAGE = 6.5; // The mimum voltage at which to perform corrections
 
@@ -48,6 +49,8 @@ public class Drive extends Command
                 error -= 360;
             error /= 180;
 
+            SmartDashboard.putNumber("P", P * error);
+            SmartDashboard.putNumber("D", -D * Robot.gyro.getRate());
             double tV = (-D * Robot.gyro.getRate()) + (P * error);
             rots = DriveSystem.getRots(Math.abs(tV) > MAX_CORRECT ? Math.abs(tV) / tV : tV);
         }
