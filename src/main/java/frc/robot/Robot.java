@@ -7,7 +7,6 @@ import frc.robot.util.Vector;
 import frc.robot.subsystems.HatchSystem;
 import frc.robot.subsystems.BallSystem;
 import frc.robot.subsystems.ClimbSystem;
-import frc.robot.subsystems.ShooterSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -27,11 +26,10 @@ public class Robot extends TimedRobot
     public static AHRS gyro;
 
     public static DriveSystem ds;
-    /*public static LiftSystem ls;
+    public static LiftSystem ls;
     public static HatchSystem hs;
     public static BallSystem bs;
     public static ClimbSystem cs;
-    public static ShooterSystem ss;*/
 
     public static double getAngle()
     {
@@ -61,7 +59,6 @@ public class Robot extends TimedRobot
         hs = new HatchSystem();
         bs = new BallSystem();
         cs = new ClimbSystem();
-        ss = new ShooterSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
     }

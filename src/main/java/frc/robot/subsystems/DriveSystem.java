@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Spark;
 public class DriveSystem extends Subsystem {
     public static final double MOVE_MENT = .2;
 
-    public static final double LENGTH = 20, WIDTH = 22.5;
+    public static final double LENGTH = 23, WIDTH = 22;
 
     private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(LENGTH, WIDTH)); // The reference angle each wheel's turning angle is based on
 
