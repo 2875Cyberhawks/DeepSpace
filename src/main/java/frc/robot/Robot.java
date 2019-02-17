@@ -27,11 +27,11 @@ public class Robot extends TimedRobot
     public static AHRS gyro;
 
     public static DriveSystem ds;
-    public static LiftSystem ls;
+    /*public static LiftSystem ls;
     public static HatchSystem hs;
     public static BallSystem bs;
     public static ClimbSystem cs;
-    public static ShooterSystem ss;
+    public static ShooterSystem ss;*/
 
     public static double getAngle()
     {
