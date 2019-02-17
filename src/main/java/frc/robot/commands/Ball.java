@@ -29,11 +29,12 @@ public class Ball extends Command {
         Robot.bs.move(IO.ballAxis());
 
         if(IO.intakeBall() > 0){
-            for (int i = 0; i < 3; i++)
-                Robot.bs.setSpeed(IO.intakeBall(), i);
+            Robot.bs.setSpeed(IO.intakeBall(), 0);
+            Robot.bs.setSpeed(-IO.intakeBall(), 1);
         }
-        else if(IO.shootBall() > 0){
-            Scheduler.getInstance().add(new Shoot());
+        else if (IO.shootBall() > 0){
+            Robot.bs.set(-IO.shootBall(), 0);
+            Robot.bs.set(IO.shootBall(), 1);
         }
     }
 
