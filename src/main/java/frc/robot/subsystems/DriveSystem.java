@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Spark;
 public class DriveSystem extends Subsystem {
     public static final double MOVE_MENT = .2;
 
-    public static final double LENGTH = 20, WIDTH = 22.5;
+    public static final double LENGTH = 23, WIDTH = 22;
 
     private static final double TURN_ANGLE = Math.toDegrees(Math.atan2(LENGTH, WIDTH)); // The reference angle each wheel's turning angle is based on
 
@@ -25,9 +25,9 @@ public class DriveSystem extends Subsystem {
 
     public static final double[][] D = { { .02, .02 }, { .02, .02 } }; // D Constnat for each wheel
 
-    public static final int[][] DRIVE_PORTS = { { 0, 2 }, { 6, 4 } }; // Ports for the driving motors
+    public static final int[][] DRIVE_PORTS = { { 4, 6 }, { 2, 0 } }; // Ports for the driving motors
 
-    public static final int[][] TURN_PORTS = { { 7, 1 }, { 5, 3 } }; // Ports for the turning motors
+    public static final int[][] TURN_PORTS = { { 5, 7 }, { 3, 1 } }; // Ports for the turning motors
 
     private Spark[][] driveSparks = { { new Spark(DRIVE_PORTS[0][0]), new Spark(DRIVE_PORTS[0][1]) },
             { new Spark(DRIVE_PORTS[1][0]), new Spark(DRIVE_PORTS[1][1]) } };
@@ -35,7 +35,7 @@ public class DriveSystem extends Subsystem {
     private Spark[][] turnSparks = { { new Spark(TURN_PORTS[0][0]), new Spark(TURN_PORTS[0][1]) },
             { new Spark(TURN_PORTS[1][0]), new Spark(TURN_PORTS[1][1]) } };
 
-    private static final int[][] ENC_PORTS = { { 2, 0 }, { 3, 1 } }; // Ports of the encoders
+    private static final int[][] ENC_PORTS = { { 1, 0 }, { 3, 2 } }; // Ports of the encoders
 
     private static final double[][] AVG_OFF = { { 0.2815926584972559, -0.332589036651513 },
                                                 { 0.03405286522612938, -0.01819194111990008 } }; 
