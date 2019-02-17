@@ -26,10 +26,10 @@ public class Robot extends TimedRobot
     public static AHRS gyro;
 
     public static DriveSystem ds;
-    public static LiftSystem ls;
+    /*public static LiftSystem ls;
     public static HatchSystem hs;
     public static BallSystem bs;
-    public static ClimbSystem cs;
+    public static ClimbSystem cs;*/
 
     public static double getAngle()
     {
@@ -55,10 +55,10 @@ public class Robot extends TimedRobot
         gyro.reset();
 
         ds = new DriveSystem();
-        ls = new LiftSystem();
+        /*ls = new LiftSystem();
         hs = new HatchSystem();
         bs = new BallSystem();
-        cs = new ClimbSystem();
+        cs = new ClimbSystem();*/
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
     }
