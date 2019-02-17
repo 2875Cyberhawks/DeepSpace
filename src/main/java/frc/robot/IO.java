@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -10,7 +12,8 @@ public class IO
     private static final double TURN_MULT = .75;
 
     public static Joystick mainJ = new Joystick(0);
-    public static XboxController mainX = new XboxController(1);
+
+    public static XboxController second = new XboxController(1);
 
     private static final double IN_DEAD = .2;
 
@@ -18,9 +21,15 @@ public class IO
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
 
+    private static final double HATCH_SCALE = .3;
+    private static final double BALL_SCALE = .5;
+    private static final double INTAKE_SCALE = .4;
+    private static final double CLIMB_WHEEL_SPEED = .6;
+    private static final double LIFT_SPEED = .5;
+
     public static double z()
     {
-        double in = TURN_MULT * (mainJ.getZ() + mainX.getX(Hand.kRight));
+        double in = TURN_MULT * mainJ.getZ();
 
         if (!applyCurve)
             return in;
@@ -39,12 +48,12 @@ public class IO
 
     private static double rawX()
     {
-         return mainJ.getX() + mainX.getX(Hand.kLeft);
+         return mainJ.getX();
     }
 
     private static double rawY()
     {
-        return -mainJ.getY() - mainX.getY(Hand.kLeft);
+        return -mainJ.getY();
     }
 
     public static Vector trans()
@@ -69,7 +78,7 @@ public class IO
 
     public static boolean getReset()
     {
-        return mainJ.getRawButtonPressed(12) || mainX.getStartButtonPressed();
+        return mainJ.getRawButtonPressed(7);
     }
 
     public static Joystick getJoy()
@@ -79,6 +88,64 @@ public class IO
 
     public static XboxController getXbox()
     {
-        return mainX;
+        return second;
+    }
+
+    /*public static boolean lowLift(){
+        return second.getPOV() == 270;
+    }
+
+    public static boolean midLift(){
+        return second.getPOV() == 0 ;
+    }
+
+    public static boolean highLift(){
+        return second.getPOV() == 90;
+    } */
+
+    public static double liftSpeed(){
+        if (second.getPOV() == 90)
+            return LIFT_SPEED;
+        else if (second.getPOV() == 270)
+            return -LIFT_SPEED;
+        else
+            return 0;
+    }
+
+    public static double hatchAxis(){
+        return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? -second.getY(Hand.kLeft) * HATCH_SCALE : 0;
+    }
+
+    public static boolean toggleHatch(){
+        return  second.getYButtonPressed();
+    }
+
+    public static boolean toggleTilt(){
+        return second.getXButtonPressed();
+    }
+
+    public static double ballAxis(){
+        return Math.abs(second.getY(Hand.kRight)) > IN_DEAD ? -second.getY(Hand.kRight) * BALL_SCALE : 0;
+    }
+
+    public static double intakeBall(){
+        return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) * INTAKE_SCALE : 0;
+    }
+
+    public static double shootBall(){
+        return second.getTriggerAxis(Hand.kLeft) > IN_DEAD ? second.getTriggerAxis(Hand.kLeft) : 0;
+    }
+
+    public static double climbWheels(){
+        if (mainJ.getRawButtonPressed(11))
+            return CLIMB_WHEEL_SPEED;
+        else if (mainJ.getRawButtonPressed(12))
+            return -CLIMB_WHEEL_SPEED;
+        else
+            return 0;
+    }
+
+    public static boolean toggleClimb(){
+        return mainJ.getRawButtonPressed(9);
     }
 }

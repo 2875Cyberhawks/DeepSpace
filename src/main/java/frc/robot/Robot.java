@@ -2,8 +2,11 @@ package frc.robot;
 
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
-import frc.robot.util.CentPot;
+import frc.robot.subsystems.HatchSystem;
+import frc.robot.subsystems.BallSystem;
+import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.AnalogAccelerometer;
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -20,9 +24,15 @@ public class Robot extends TimedRobot
 {
     public static Joystick joy;
 
+    public static XboxController xbox;
+
     public static AHRS gyro;
 
     public static DriveSystem ds;
+    public static LiftSystem ls;
+    public static HatchSystem hs;
+    public static BallSystem bs;
+    public static ClimbSystem cs;
 
     public static double getAngle()
     {
@@ -48,8 +58,12 @@ public class Robot extends TimedRobot
         gyro.reset();
 
         ds = new DriveSystem();
+        ls = new LiftSystem();
+        hs = new HatchSystem();
+        bs = new BallSystem();
+        cs = new ClimbSystem();
 
-        System.out.println("SwerveDrive 4.0.0 is up!");
+        System.out.println("boi.deploy() returned true\nboi.run()...");
     }
 
     @Override
@@ -76,49 +90,5 @@ public class Robot extends TimedRobot
     {
         Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
         SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
-    }
-
-    private CentPot tst;
-
-    @Override
-    public void testInit()
-    {
-        ds.free();
-        tst = new CentPot(2, 360, 0, -0.7130228173596729);
-
-        /*int[][] ENC_PORTS = { { 1, 0 }, { 3, 2 } }; // Ports of the encoders
-
-        pots = new AnalogPotentiometer[2][2];
-
-        double[][] avg = new double[2][2];
-
-        for (int i = 0; i < 2; i++){
-            for (int j = 0; j < 2; j++)
-                pots[i][j] = new AnalogPotentiometer(ENC_PORTS[i][j], 2, -1);
-        }
-
-        for (int t = 0; t < 500; t++){
-            for (int i = 0; i < 2; i++){
-                for (int j = 0; j < 2; j++){
-                    avg[i][j] += pots[i][j].get();
-                }
-            }
-        }
-
-        for (int i = 0; i < 2; i++){
-            for (int j = 0; j < 2; j++){
-                avg[i][j] /= 500;
-                System.out.println(i + " " + j + " - " + avg[i][j]);
-            }
-        }*/
-    
-    }           
-
-    // Testing:
-    @Override
-    public void testPeriodic()
-    {
-        System.out.print("Val: ");
-        System.out.println("Out: " + tst.get());
     }
 }
