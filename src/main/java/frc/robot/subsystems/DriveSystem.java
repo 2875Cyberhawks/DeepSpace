@@ -37,15 +37,15 @@ public class DriveSystem extends Subsystem {
 
     private static final int[][] ENC_PORTS = { { 1, 0 }, { 3, 2 } }; // Ports of the encoders
 
-    private static final double[][] AVG_OFF = { { 0.2815926584972559, -0.332589036651513 },
-                                                { 0.03405286522612938, -0.01819194111990008 } }; 
+    private static final double[][] AVG_OFF = { { -0.3027141205832563, -0.02606189311184315},
+                                                { 1.003883850457414, -0.7130228173596729} }; 
 
     public double lastAngle = 0; // The last angle considered 'intentional'
 
     public CentPot[][] encoders = {{ new CentPot(ENC_PORTS[0][0], 360, 0, AVG_OFF[0][0]), 
                                         new CentPot(ENC_PORTS[0][1], 360, 0, AVG_OFF[0][1])}, 
                                    { new CentPot(ENC_PORTS[1][0], 360, 0, AVG_OFF[1][0]), 
-                                        new CentPot(ENC_PORTS[1][1], 360, 0, AVG_OFF[1][0])}};
+                                        new CentPot(ENC_PORTS[1][1], 360, 0, AVG_OFF[1][1])}};
 
     public PIDController[][] pids = { { new PIDController(P[0][0], I[0][0], D[0][0], encoders[0][0], turnSparks[0][0]),
             new PIDController(P[0][1], I[0][1], D[0][1], encoders[0][1], turnSparks[0][1]) },
@@ -69,6 +69,7 @@ public class DriveSystem extends Subsystem {
             for (Spark turnSpark : side)
                 turnSpark.setInverted(true); // An inverted axis
 
+        driveSparks[0][0].setInverted(true);
         driveSparks[1][0].setInverted(true); // Fix problem in random drive motor
 
         lastAngle = 0;
@@ -83,7 +84,6 @@ public class DriveSystem extends Subsystem {
             {
                 out[i][j] = new Vector();
                 out[i][j].setPol(mag, RELATIVE_ANGLES[i][j]);
-                SmartDashboard.putString("rot initial" + i + j, out[i][j].toStringPol());
             }
         return out;
     }
@@ -118,6 +118,10 @@ public class DriveSystem extends Subsystem {
 
                     pids[i][j].setSetpoint(vect.getAngle());
 
+                    SmartDashboard.putNumber("targ"+i+j, vect.getAngle());
+                    SmartDashboard.putNumber("curr"+i+j, encoders[i][j].get());
+                    SmartDashboard.putNumber("err"+i+j, pids[i][j].getError());
+
                     driveSparks[i][j].set(Math.cos(Math.toRadians(err)) * vect.getMag());
                 }
                 else
@@ -151,5 +155,16 @@ public class DriveSystem extends Subsystem {
                 driveSparks[i][j].disable(); // Disable the power motors
             }
         }
+    }
+
+    // Dealocate
+    public void free()
+    {
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                pids[i][j].free();
+                encoders[i][j].free();
+            }
     }
 }

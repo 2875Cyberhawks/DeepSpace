@@ -59,6 +59,7 @@ public class Drive extends Command
     @Override
     protected void initialize()
     {
+        Robot.gyro.reset();
         Robot.ds.enable();
         Robot.ds.lastAngle = Robot.gyro.getAngle();
 
