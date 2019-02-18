@@ -9,12 +9,12 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.command.Command;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.IO;
 import frc.robot.Robot;
 
 public class Lift extends Command {
-
+    private static final double LIFT_SPEED = .1; // The Max speed of the lift in Inches / Second
 
     public Lift() {
         requires(Robot.ls);
@@ -25,11 +25,10 @@ public class Lift extends Command {
         Robot.ls.enable();
     }
 
-
     @Override
-    protected void execute() {
-        
-        Robot.ls.addToHeight(IO.liftSpeed());
+    protected void execute() 
+    {
+        Robot.ls.moveToHeight(Robot.ls.getSetpoint() + (LIFT_SPEED * IO.lift()));
     }
 
     @Override
@@ -42,6 +41,7 @@ public class Lift extends Command {
     protected void end() {
         Robot.ls.disable();
     }
+    
     @Override
     protected void interrupted() {
         Robot.ls.disable();

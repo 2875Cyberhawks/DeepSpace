@@ -35,7 +35,6 @@ public class CentPot extends AnalogPotentiometer
     public double get()
     {
         double val = super.get() - start;
-
         if (val < -1)
             val += 2;
         else if (val > 1)

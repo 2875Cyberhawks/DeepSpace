@@ -5,6 +5,7 @@ import javax.lang.model.util.ElementScanner6;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Vector;
 
 public class IO
@@ -103,13 +104,21 @@ public class IO
         return second.getPOV() == 90;
     } */
 
-    public static double liftSpeed(){
-        if (second.getPOV() == 90)
-            return LIFT_SPEED;
-        else if (second.getPOV() == 270)
-            return -LIFT_SPEED;
+    public static double lift()
+    {
+        if (second.getPOV() == 0)
+            return 1;
+        else if (second.getPOV() == 180)
+            return -1;
         else
             return 0;
+
+        // if (backup.getRawButton(3))
+        //     return 1;
+        // else if (backup.getRawButton(2))
+        //     return -1;
+        // else 
+        //     return 0;
     }
 
     public static double hatchAxis(){

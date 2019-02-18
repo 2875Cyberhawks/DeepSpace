@@ -4,13 +4,12 @@ import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
-import frc.robot.subsystems.HatchSystem;
-import frc.robot.subsystems.BallSystem;
-import frc.robot.subsystems.ClimbSystem;
+
+// import frc.robot.subsystems.HatchSystem;
+// import frc.robot.subsystems.BallSystem;
+// import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.AnalogAccelerometer;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,10 +29,10 @@ public class Robot extends TimedRobot
 
     public static DriveSystem ds;
     public static LiftSystem ls;
-    public static HatchSystem hs;
-    public static BallSystem bs;
-    public static ClimbSystem cs;
 
+    // public static HatchSystem hs;
+    // public static BallSystem bs;
+    // public static ClimbSystem cs;
     public static double getAngle()
     {
         double gyAng = gyro.getAngle();
@@ -59,9 +58,9 @@ public class Robot extends TimedRobot
 
         ds = new DriveSystem();
         ls = new LiftSystem();
-        hs = new HatchSystem();
-        bs = new BallSystem();
-        cs = new ClimbSystem();
+        // hs = new HatchSystem();
+        // bs = new BallSystem();
+        // cs = new ClimbSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
     }
@@ -78,11 +77,6 @@ public class Robot extends TimedRobot
         Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90, 1.8, 0);
         ds.setVects(rots);
     }
-
-    // @Override
-    // public void teleopInit() {
-    //     gyro.reset();
-    // }
 
     // On each step during periodic:
     @Override
