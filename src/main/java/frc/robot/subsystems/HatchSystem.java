@@ -7,12 +7,15 @@
 
 // package frc.robot.subsystems;
 
-// import frc.robot.commands.Hatch;
+// // import frc.robot.commands.Hatch;
 
 // import edu.wpi.first.wpilibj.command.PIDSubsystem;
-// import edu.wpi.first.wpilibj.Talon;
-// import edu.wpi.first.wpilibj.Solenoid;
+// import edu.wpi.first.wpilibj.DoubleSolenoid;
 // import edu.wpi.first.wpilibj.Encoder;
+// import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
+// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
     
 
 // public class HatchSystem extends PIDSubsystem {
@@ -22,16 +25,17 @@
 //     private static final double D = 1;
 
 //     private static final int M_PORT = 0;
-//     private static final int[] SOL_PORTS = {1, 2};
+//     private static final int[][] SOL_PORTS = {{0, 1},{2, 3}};
 //     private static final int[] ENC_PORTS = {3, 4};
 
-//     private Talon motor = new Talon(M_PORT);
+//     private TalonSRX motor = new TalonSRX(M_PORT);
 
-//     private Solenoid openSol = new Solenoid(SOL_PORTS[0]);
-//     private Solenoid tiltSol = new Solenoid(SOL_PORTS[1]);
+//     private DoubleSolenoid openSol = new DoubleSolenoid(SOL_PORTS[0][0], SOL_PORTS[0][1]);
+//     private boolean openSolOpen = false;
 
-//     private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
-    
+//     private DoubleSolenoid tiltSol = new DoubleSolenoid(SOL_PORTS[1][0], SOL_PORTS[1][1]);
+//     private boolean tiltSolOpen = false;
+
 //     public HatchSystem() {
 //         super(P, I, D);
 //         setInputRange(-1, 1);
@@ -45,12 +49,12 @@
 
 //     @Override
 //     protected double returnPIDInput() {
-//         return enc.get(); //may use a more specific method
+//         return motor.getSensorCollection().getQuadraturePosition();
 //     }
 
 //     @Override
 //     protected void usePIDOutput(double output) {
-//         motor.set(output);
+//         motor.set(ControlMode.PercentOutput, output);
 //     }
 
 //     public void moveInc(double input){
@@ -61,18 +65,21 @@
 //         setSetpoint(input);
 //     }
 
-//     public void toggleHatch(){
-//         openSol.set(!openSol.get());
+//     public void toggleHatch()
+//     {
+//         openSol.set(openSol.get() == Value.kForward ? Value.kReverse : Value.kForward);
 //     }
 
-//     public void toggleTilt(){
-//         tiltSol.set(!tiltSol.get());
+//     public void toggleTilt()
+//     {
+//         tiltSol.set(tiltSol.get() == Value.kForward ? Value.kReverse : Value.kForward);
 //     }
 
-//     public void disable(){
+//     public void disable()
+//     {
 //         super.disable();
 //         openSol.free();
 //         tiltSol.free();
-//         motor.set(0);
+//         motor.set(ControlMode.PercentOutput, 0);
 //     }
 // }

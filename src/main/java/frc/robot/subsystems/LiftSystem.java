@@ -43,10 +43,10 @@ public class LiftSystem extends PIDSubsystem {
     private SpeedControllerGroup motors;
 
     // The minimum height the lift should reach
-    private static final double MIN_HEIGHT = 1; // Needs to be increased
+    private static final double MIN_HEIGHT = 1; // TODO: Increase
 
     // The maximum height the lift should reach
-    private static final double MAX_HEIGHT = 50; // Actually around 27
+    private static final double MAX_HEIGHT = 50; // TODO: Increase
 
     // Constant of proportionality between the number of encoder pulses and inches
     private static final double DISTANCE_PER_PULSE = (12.0 / 577.0);
@@ -109,23 +109,23 @@ public class LiftSystem extends PIDSubsystem {
     // Move to a given height (double)
     public void moveToHeight(double height)
     {
-        SmartDashboard.putNumber("targHeight", height);
+        SmartDashboard.putNumber("wantHeight", height);
 
         if (height > MAX_HEIGHT) // If the height is greater than the max:
         {
             // Move it to the max height
-            SmartDashboard.putNumber("height", MAX_HEIGHT);
+            SmartDashboard.putNumber("targHeight", MAX_HEIGHT);
             setSetpoint(MAX_HEIGHT);
         }
         else if (height < MIN_HEIGHT) // otherwise, if the height is less than the min
         {
             // Move it to the minimum
-            SmartDashboard.putNumber("height", MIN_HEIGHT);
+            SmartDashboard.putNumber("targHeight", MIN_HEIGHT);
             setSetpoint(MIN_HEIGHT);
         }
         else // otherwise, move it to the given height
         {    
-            SmartDashboard.putNumber("height", height);
+            SmartDashboard.putNumber("targHeight", height);
             setSetpoint(height);
         }
     }

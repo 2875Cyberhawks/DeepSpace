@@ -14,6 +14,7 @@ public class IO
     public static XboxController second = new XboxController(1);
 
     private static final double IN_DEAD = .2;
+    private static final double TRN_DEAD = .25; // Account for slight sticking on Joystick
 
     private static final double MAX_CHANGE = .085;
     private static double prevZ = 0, prevT = 0;
@@ -29,6 +30,9 @@ public class IO
     {
         double in = TURN_MULT * mainJ.getZ();
 
+        if (Math.abs(in) < TRN_DEAD)
+            in = 0;
+
         if (!applyCurve)
             return in;
 
@@ -38,10 +42,7 @@ public class IO
         double fin = prevZ + change;
         prevZ = fin;
 
-        if (Math.abs(fin) > IN_DEAD)
-            return fin;
-        else
-            return 0;
+        return fin;
     }
 
     private static double rawX()
@@ -57,7 +58,13 @@ public class IO
     public static Vector trans()
     {
         Vector v = new Vector(IO.rawX(), IO.rawY());
-        
+
+        if (Math.abs(v.getMag()) < IN_DEAD)
+            v.scale(.00001); // Negligable - Doesn't move wheels but keeps position
+
+        if (mainJ.getRawButton(5))        
+            v.scale(CREEP_SPEED);
+
         if (!applyCurve)
             return v;
 
@@ -66,16 +73,9 @@ public class IO
             change = MAX_CHANGE * (change > 0 ? 1 : -1);
         double fin = prevT + change;
         prevT = fin;
-        v.scale(v.getMag() / fin);
+        v.setMag(fin);
 
-        if (v.getMag() > IN_DEAD)
-        {
-            if (mainJ.getRawButton(5))
-                v.scale(CREEP_SPEED);
-            return v;
-        }
-        else
-            return new Vector();
+        return v;
     }
 
     public static boolean getReset()

@@ -1,25 +1,22 @@
 package frc.robot;
 
 // import frc.robot.commands.Drive;
-import frc.robot.subsystems.DriveSystem;
+// import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
 
 // import frc.robot.subsystems.HatchSystem;
-// import frc.robot.subsystems.BallSystem;
+import frc.robot.subsystems.BallSystem;
 // import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.XboxController;
 
 import com.kauailabs.navx.frc.AHRS;
 
 /* TODO:
-    - Replace absolute potentiometer
     - Remove Constants from IO
     - Comments
 */
@@ -27,17 +24,13 @@ import com.kauailabs.navx.frc.AHRS;
 // Our robot
 public class Robot extends TimedRobot
 {
-    public static Joystick joy;
-
-    public static XboxController xbox;
-
     public static AHRS gyro;
 
-    public static DriveSystem ds;
+    // public static DriveSystem ds;
     public static LiftSystem ls;
+    public static BallSystem bs;
 
     // public static HatchSystem hs;
-    // public static BallSystem bs;
     // public static ClimbSystem cs;
 
     public static double getAngle()
@@ -63,11 +56,11 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
-        ds = new DriveSystem();
+        // ds = new DriveSystem();
         ls = new LiftSystem();
 
         // hs = new HatchSystem();
-        // bs = new BallSystem();
+        bs = new BallSystem();
         // cs = new ClimbSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");

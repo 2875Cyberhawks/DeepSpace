@@ -7,82 +7,85 @@
 
 package frc.robot.subsystems;
 
-// import frc.robot.commands.Ball;
-import frc.robot.util.CentPot;
+import frc.robot.commands.Ball;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Talon;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class BallSystem extends PIDSubsystem {
 
-    private static final double P = 1;
-    private static final double I = 1;
-    private static final double D = 1;
+    private static final double P = .05;
+    private static final double I = 0;
+    private static final double D = 0;
 
-    // private static final int[] ENC_PORTS = {0, 1};
-    private static final int ENC_PORT = -99;
-    private static final int[] MOTOR_PORTS = {0, 1, 2};
+    private static final int[] DEVICE_NUMS = {0, 1, 2}; // TODO: Determine these
 
-    private Talon rotSpark = new Talon(MOTOR_PORTS[0]);
+    private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
-    private Talon[] motors = {new Talon(MOTOR_PORTS[1]), new Talon(MOTOR_PORTS[2])};
+    private TalonSRX[] motors = {new TalonSRX(DEVICE_NUMS[1]), new TalonSRX(DEVICE_NUMS[2])};
 
     // private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
-    private CentPot enc;
+    // private CentPot enc;
 
-    private static final double ENC_START = 0;
+    // private static final double ENC_START = 0;
     
     public BallSystem() 
     {
         super(P, I, D);
-        rotSpark.set(0);
+        rotTal.set(ControlMode.PercentOutput, 0);
 
         for (int i = 0; i < 2; i++)
-            motors[i].set(0);
+            motors[i].set(ControlMode.PercentOutput, 0);
         
-        enc = new CentPot(ENC_PORT, -360, 0, ENC_START);
+        // enc = new CentPot(ENC_PORT, -360, 0, ENC_START);
     }
 
     @Override
     public void initDefaultCommand() 
     {
-        // setDefaultCommand(new Ball());    
+        setDefaultCommand(new Ball());    
     }
 
     @Override
     protected double returnPIDInput() 
     {
-        return enc.get();
+        return rotTal.getSensorCollection().getQuadraturePosition();
+        // return enc.get();
     }
 
     @Override
     protected void usePIDOutput(double output) 
     {
-        rotSpark.set(output);
+        rotTal.set(ControlMode.PercentOutput, output);
     }
 
     public void moveInc(double input)
     {
-        setSetpointRelative(input);
+        // setSetpointRelative(input);
     }
 
     public void moveTo(double input)
     {
-        setSetpoint(input);
+        // setSetpoint(input);
     }
 
     public void set(double speed, int i)
     {
-        motors[i].set(speed);
+        motors[i].set(ControlMode.PercentOutput, speed);
     }
 
     public void disable()
     {
         super.disable();
-        rotSpark.set(0);
+        rotTal.set(ControlMode.PercentOutput, 0);
         for (int i = 0; i < 2; i++){
-            motors[i].set(0);
+            motors[i].set(ControlMode.PercentOutput, 0);
         }
+    }
+
+    public double getAngle()
+    {
+        return rotTal.getSensorCollection().getQuadraturePosition();
     }
 }

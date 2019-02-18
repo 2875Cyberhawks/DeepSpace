@@ -15,7 +15,7 @@ import frc.robot.Robot;
 // The act of lifting the robot
 public class Lift extends Command 
 {
-    // The max speed of the lift in (in/tick)
+    // The max speed of the lift in (encoder-units/tick)
     private static final double LIFT_SPEED = .05; 
 
     public Lift() 
