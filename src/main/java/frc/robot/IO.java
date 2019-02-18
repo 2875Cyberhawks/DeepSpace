@@ -1,11 +1,8 @@
 package frc.robot;
 
-import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Vector;
 
 public class IO
@@ -21,12 +18,12 @@ public class IO
     private static final double MAX_CHANGE = .085;
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
+    private static final double CREEP_SPEED = .2;
 
     private static final double HATCH_SCALE = .3;
     private static final double BALL_SCALE = .5;
     private static final double INTAKE_SCALE = .4;
     private static final double CLIMB_WHEEL_SPEED = .6;
-    private static final double LIFT_SPEED = .5;
 
     public static double z()
     {
@@ -72,7 +69,11 @@ public class IO
         v.scale(v.getMag() / fin);
 
         if (v.getMag() > IN_DEAD)
+        {
+            if (mainJ.getRawButton(5))
+                v.scale(CREEP_SPEED);
             return v;
+        }
         else
             return new Vector();
     }
@@ -92,18 +93,6 @@ public class IO
         return second;
     }
 
-    /*public static boolean lowLift(){
-        return second.getPOV() == 270;
-    }
-
-    public static boolean midLift(){
-        return second.getPOV() == 0 ;
-    }
-
-    public static boolean highLift(){
-        return second.getPOV() == 90;
-    } */
-
     public static double lift()
     {
         if (second.getPOV() == 0)
@@ -121,27 +110,33 @@ public class IO
         //     return 0;
     }
 
-    public static double hatchAxis(){
+    public static double hatchAxis()
+    {
         return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? -second.getY(Hand.kLeft) * HATCH_SCALE : 0;
     }
 
-    public static boolean toggleHatch(){
+    public static boolean toggleHatch()
+    {
         return  second.getYButtonPressed();
     }
 
-    public static boolean toggleTilt(){
+    public static boolean toggleTilt()
+    {
         return second.getXButtonPressed();
     }
 
-    public static double ballAxis(){
+    public static double ballAxis()
+    {
         return Math.abs(second.getY(Hand.kRight)) > IN_DEAD ? -second.getY(Hand.kRight) * BALL_SCALE : 0;
     }
 
-    public static double intakeBall(){
+    public static double intakeBall()
+    {
         return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) * INTAKE_SCALE : 0;
     }
 
-    public static double shootBall(){
+    public static double shootBall()
+    {
         return second.getTriggerAxis(Hand.kLeft) > IN_DEAD ? second.getTriggerAxis(Hand.kLeft) : 0;
     }
 

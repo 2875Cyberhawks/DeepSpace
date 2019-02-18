@@ -9,41 +9,54 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.IO;
 import frc.robot.Robot;
 
-public class Lift extends Command {
-    private static final double LIFT_SPEED = .1; // The Max speed of the lift in Inches / Second
+// The act of lifting the robot
+public class Lift extends Command 
+{
+    // The max speed of the lift in (in/tick)
+    private static final double LIFT_SPEED = .05; 
 
-    public Lift() {
+    public Lift() 
+    {
+        // Require the lift to operate
         requires(Robot.ls);
     }
 
     @Override
-    protected void initialize() {
+    protected void initialize() 
+    {
+        // Turn on the lift
         Robot.ls.enable();
     }
 
+    // On each tick, move the height up by IO.lift() * LIFT_SPEED
     @Override
     protected void execute() 
     {
-        Robot.ls.moveToHeight(Robot.ls.getSetpoint() + (LIFT_SPEED * IO.lift()));
+        double newHeight = Robot.ls.getSetpoint() + (LIFT_SPEED * IO.lift()); // The intended height
+        Robot.ls.moveToHeight(newHeight); // Move to the intended height
     }
 
+    // This command should always be running (There's no way off Paige's Wild Ride)
     @Override
-    protected boolean isFinished() {
+    protected boolean isFinished() 
+    {
         return false;
     }
 
     // Called once after isFinished returns true
     @Override
-    protected void end() {
+    protected void end() 
+    {
         Robot.ls.disable();
     }
     
+    // Disable the lift system
     @Override
-    protected void interrupted() {
+    protected void interrupted() 
+    {
         Robot.ls.disable();
     }
 }

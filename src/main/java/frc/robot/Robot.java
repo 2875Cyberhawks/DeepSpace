@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.robot.commands.Drive;
+// import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
@@ -18,6 +18,12 @@ import edu.wpi.first.wpilibj.XboxController;
 
 import com.kauailabs.navx.frc.AHRS;
 
+/* TODO:
+    - Replace absolute potentiometer
+    - Remove Constants from IO
+    - Comments
+*/
+
 // Our robot
 public class Robot extends TimedRobot
 {
@@ -33,6 +39,7 @@ public class Robot extends TimedRobot
     // public static HatchSystem hs;
     // public static BallSystem bs;
     // public static ClimbSystem cs;
+
     public static double getAngle()
     {
         double gyAng = gyro.getAngle();
@@ -58,6 +65,7 @@ public class Robot extends TimedRobot
 
         ds = new DriveSystem();
         ls = new LiftSystem();
+
         // hs = new HatchSystem();
         // bs = new BallSystem();
         // cs = new ClimbSystem();
@@ -74,8 +82,17 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousPeriodic() 
     {
-        Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90, 1.8, 0);
-        ds.setVects(rots);
+        // Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90, 1.8, 0);
+        // ds.setVects(rots);
+
+        Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
+        SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
+    }
+
+    @Override
+    public void teleopInit() {
+        ls.reset();
+        ls.moveToHeight(0);
     }
 
     // On each step during periodic:

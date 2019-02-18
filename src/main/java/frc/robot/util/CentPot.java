@@ -12,6 +12,7 @@ public class CentPot extends AnalogPotentiometer
     public CentPot(int port, double range, double offset, double start)
     {
         super(port, 2, -1);
+
         this.range = range;
         this.offset = offset;
         this.start = start;

@@ -18,7 +18,7 @@ import frc.robot.subsystems.DriveSystem;
 // The act of driving the robot
 public class Drive extends Command
 {
-    private static final double P_DEF = 1.9, D_DEF = .15; // The P and D constants of the control loop
+    private static final double P_DEF = 3.9, D_DEF = .15; // The P and D constants of the control loop
     private static final double MAX_CORRECT = .75; // The maximum amount the correction should correct to
     private static final double MIN_VOLTAGE = 6.5; // The mimum voltage at which to perform corrections
 
