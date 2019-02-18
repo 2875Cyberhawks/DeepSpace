@@ -53,8 +53,12 @@
 //         motor.set(output);
 //     }
 
-//     public void move(double input){
+//     public void moveInc(double input){
 //         setSetpointRelative(input);
+//     }
+
+//     public void moveTo(double input){
+//         setSetpoint(input);
 //     }
 
 //     public void toggleHatch(){

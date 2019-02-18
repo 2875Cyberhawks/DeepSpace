@@ -15,6 +15,9 @@
 
 // public class Ball extends Command {
 
+//     private static final double MIN_HEIGHT = 10;
+//     private static final double SAFE_ANGLE = 20;
+
 //     public Ball() {
 //         requires(Robot.bs);
 //     }
@@ -26,7 +29,12 @@
 
     
 //     protected void execute() {
-//         Robot.bs.move(IO.ballAxis());
+//         
+//         if (Math.abs(IO.ballAxis() > 0)
+//             Robot.bs.moveInc(IO.ballAxis());
+//         else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.bs.getAngle() < SAFE_ANGLE)
+//             Robot.bs.moveTo(SAFE_ANGLE);
+// 
 
 //         if(IO.intakeBall() > 0){
 //             Robot.bs.set(IO.intakeBall(), 0);

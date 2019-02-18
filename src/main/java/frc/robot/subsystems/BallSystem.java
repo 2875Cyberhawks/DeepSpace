@@ -62,9 +62,14 @@ public class BallSystem extends PIDSubsystem {
         rotSpark.set(output);
     }
 
-    public void move(double input)
+    public void moveInc(double input)
     {
         setSetpointRelative(input);
+    }
+
+    public void moveTo(double input)
+    {
+        setSetpoint(input);
     }
 
     public void set(double speed, int i)
