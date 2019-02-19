@@ -24,10 +24,10 @@ public class BallSystem extends PIDSubsystem {
 
     private static final int[] DEVICE_NUMS = {1, 12, 10}; // Turn, Lower, Upper
 
-    public static final double MIN = 9200, ZERO = 12850, MAX = 13333; // Forward, Straight, Back
+    public static final double MIN = 3470, ZERO = 6750, MAX = 7000; // Forward, Straight, Back
     private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
-    private static final double MAX_VOLTAGE = .5;
+    private static final double MAX_VOLTAGE = .4;
 
     private static final double MAX_TURN_SPEED = 100;
 
@@ -59,6 +59,7 @@ public class BallSystem extends PIDSubsystem {
     protected void usePIDOutput(double output) 
     {
         SmartDashboard.putNumber("PID in", returnPIDInput());
+        SmartDashboard.putNumber("PID raw", rotTal.getSensorCollection().getPulseWidthPosition());
         SmartDashboard.putNumber("PID out", output);
         SmartDashboard.putNumber("PID set", getPIDController().getSetpoint());
         SmartDashboard.putNumber("PID err", getPIDController().getError());
@@ -68,12 +69,19 @@ public class BallSystem extends PIDSubsystem {
         else if (output < -MAX_VOLTAGE)
             output = -MAX_VOLTAGE;
 
-        // rotTal.set(ControlMode.PercentOutput, output);
+        // rotTal.set(ControlMode.PercentOutput, -output);
     }
 
     public void moveInc(double input)
     {
-        setSetpoint(getPIDController().getSetpoint() + (MAX_TURN_SPEED * input));
+        input = getPIDController().getSetpoint() + (MAX_TURN_SPEED * input);
+        
+        if (input > 1)
+            moveTo(1);
+        else if (input < -1)
+            moveTo(-1);
+        else
+            moveTo(input);
     }
 
     public void moveTo(double input)
