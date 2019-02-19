@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class Ball extends Command 
 {
-
     private static final double MIN_HEIGHT = 10;
     private static final double SAFE_ANGLE = 20;
 
@@ -28,15 +27,15 @@ public class Ball extends Command
     protected void initialize() 
     {
         Robot.bs.enable();
-        Robot.bs.moveTo(0);
+        Robot.bs.moveTo(1);
     }
     
     protected void execute() 
     {
-        if (Math.abs(IO.ballAxis()) > 0)
-            Robot.bs.moveInc(IO.ballAxis());
-        else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.bs.getAngle() < SAFE_ANGLE)
-            Robot.bs.moveTo(SAFE_ANGLE);
+        // if (Math.abs(IO.ballAxis()) > 0)
+        Robot.bs.moveInc(IO.ballAxis());
+        // else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.bs.getAngle() < SAFE_ANGLE)
+        //     Robot.bs.moveTo(SAFE_ANGLE);
 
         if (IO.intakeBall() > 0)
         {

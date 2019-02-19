@@ -1,8 +1,8 @@
 package frc.robot;
 
 // import frc.robot.commands.Drive;
-import frc.robot.subsystems.DriveSystem;
-import frc.robot.subsystems.LiftSystem;
+// import frc.robot.subsystems.DriveSystem;
+// import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
 
 // import frc.robot.subsystems.HatchSystem;
@@ -31,8 +31,8 @@ public class Robot extends TimedRobot
 {
     public static AHRS gyro;
 
-    public static DriveSystem ds;
-    public static LiftSystem ls;
+    // public static DriveSystem ds;
+    // public static LiftSystem ls;
     public static BallSystem bs;
 
     // public static HatchSystem hs;
@@ -61,8 +61,8 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
-        ds = new DriveSystem();
-        ls = new LiftSystem();
+        // ds = new DriveSystem();
+        // ls = new LiftSystem();
 
         // hs = new HatchSystem();
         bs = new BallSystem();
@@ -88,9 +88,10 @@ public class Robot extends TimedRobot
     }
 
     @Override
-    public void teleopInit() {
-        ls.reset();
-        ls.moveToHeight(0);
+    public void teleopInit() 
+    {
+        // ls.reset();
+        // ls.moveToHeight(0);
     }
 
     // On each step during periodic:
@@ -106,12 +107,11 @@ public class Robot extends TimedRobot
     @Override
     public void testInit() 
     {
-        tal.setSelectedSensorPosition(0); // Reset the talon position
     }
 
     @Override
     public void testPeriodic() 
     {
-        SmartDashboard.putNumber("Talon Pos", tal.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Talon Pos", tal.getSensorCollection().getPulseWidthPosition());
     }
 }
