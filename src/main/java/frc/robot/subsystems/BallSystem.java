@@ -18,13 +18,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class BallSystem extends PIDSubsystem {
 
-    private static final double P = .5;
-    private static final double I = 0;
+    private static final double P = .7;
+    private static final double I = .005;
     private static final double D = 0;
 
     private static final int[] DEVICE_NUMS = {1, 12, 10}; // Turn, Lower, Upper
 
-    public static final double MIN = 3470, ZERO = 6750, MAX = 7000; // Forward, Straight, Back
+    public static final double MIN = 2070, ZERO = 5480, MAX = 6000; // Forward, Straight, Back
     private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
     private static final double MAX_VOLTAGE = .4;
@@ -36,7 +36,7 @@ public class BallSystem extends PIDSubsystem {
     public BallSystem() 
     {
         super(P, I, D);
-
+        setInputRange(-1, 1);
         setOutputRange(-1, 1);
 
         for (int i = 0; i < 2; i++)
@@ -63,13 +63,14 @@ public class BallSystem extends PIDSubsystem {
         SmartDashboard.putNumber("PID out", output);
         SmartDashboard.putNumber("PID set", getPIDController().getSetpoint());
         SmartDashboard.putNumber("PID err", getPIDController().getError());
+        SmartDashboard.putNumber("Tal vlt", rotTal.getMotorOutputPercent());
 
         if (output > MAX_VOLTAGE)
             output = MAX_VOLTAGE;
         else if (output < -MAX_VOLTAGE)
             output = -MAX_VOLTAGE;
 
-        // rotTal.set(ControlMode.PercentOutput, -output);
+        //rotTal.set(ControlMode.PercentOutput, -output);
     }
 
     public void moveInc(double input)

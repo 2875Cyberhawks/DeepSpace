@@ -11,11 +11,13 @@
 // import frc.robot.IO;
 
 // import edu.wpi.first.wpilibj.command.Command;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // public class Hatch extends Command {
     
 //     private static final double MIN_HEIGHT = 10;
 //     private static final double SAFE_ANGLE = 40;
+//     private static final double MAX_SPEED = .02;
 
 //     public Hatch() 
 //     {
@@ -25,7 +27,6 @@
     
 //     protected void initialize() 
 //     {
-//         Robot.hs.comp.start();
 //         Robot.hs.enable();
 //     }
 
@@ -39,7 +40,7 @@
 //             Robot.hs.toggleTilt();
 
 //         //  if (Math.abs(IO.hatchAxis()) > 0)
-//         //     Robot.hs.moveInc(IO.hatchAxis());
+//         Robot.hs.moveInc(-IO.hatchAxis() * MAX_SPEED);
 //         // else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.hs.getAngle() < SAFE_ANGLE)
 //         //     Robot.hs.moveTo(SAFE_ANGLE);
 //     }

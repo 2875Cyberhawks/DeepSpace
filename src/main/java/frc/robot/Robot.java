@@ -6,7 +6,7 @@ package frc.robot;
 import frc.robot.util.Vector;
 
 // import frc.robot.subsystems.HatchSystem;
-// import frc.robot.subsystems.BallSystem;
+import frc.robot.subsystems.BallSystem;
 // import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 
-import frc.robot.subsystems.BallSystem;
+// import frc.robot.subsystems.BallSystem;
+import frc.robot.subsystems.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -37,7 +38,7 @@ public class Robot extends TimedRobot
     // public static LiftSystem ls;
     public static BallSystem bs;
 
-    // public static HatchSystem hs;
+    //public static HatchSystem hs;
     // public static ClimbSystem cs;
 
     public static double getAngle()
@@ -66,7 +67,7 @@ public class Robot extends TimedRobot
         // ds = new DriveSystem();
         // ls = new LiftSystem();
 
-        // hs = new HatchSystem();
+        //hs = new HatchSystem();
         bs = new BallSystem();
         // cs = new ClimbSystem();
 
@@ -104,8 +105,6 @@ public class Robot extends TimedRobot
         SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
     }
 
-    // TalonSRX tal = new TalonSRX(1);
-
     @Override
     public void testInit() 
     {
@@ -114,6 +113,5 @@ public class Robot extends TimedRobot
     @Override
     public void testPeriodic() 
     {
-        // tal.set(ControlMode.PercentOutput, .1);
     }
 }
