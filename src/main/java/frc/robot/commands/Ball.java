@@ -10,8 +10,9 @@ package frc.robot.commands;
 import frc.robot.IO;
 import frc.robot.Robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Ball extends Command 
 {
@@ -27,6 +28,7 @@ public class Ball extends Command
     protected void initialize() 
     {
         Robot.bs.enable();
+        Robot.bs.moveTo(0);
     }
     
     protected void execute() 
@@ -39,12 +41,17 @@ public class Ball extends Command
         if (IO.intakeBall() > 0)
         {
             Robot.bs.set(IO.intakeBall(), 0);
-            Robot.bs.set(-IO.intakeBall(), 1);
+            Robot.bs.set(IO.intakeBall(), 1);
         }
         else if (IO.shootBall() > 0)
         {
             Robot.bs.set(-IO.shootBall(), 0);
-            Robot.bs.set(IO.shootBall(), 1);
+            Robot.bs.set(-IO.shootBall(), 1);
+        }
+        else
+        {
+           Robot.bs.set(0, 0);
+           Robot.bs.set(0, 1); 
         }
     }
     

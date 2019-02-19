@@ -1,7 +1,7 @@
 package frc.robot;
 
 // import frc.robot.commands.Drive;
-// import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
 
@@ -10,10 +10,15 @@ import frc.robot.subsystems.BallSystem;
 // import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Solenoid;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 /* TODO:
@@ -26,7 +31,7 @@ public class Robot extends TimedRobot
 {
     public static AHRS gyro;
 
-    // public static DriveSystem ds;
+    public static DriveSystem ds;
     public static LiftSystem ls;
     public static BallSystem bs;
 
@@ -56,7 +61,7 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
-        // ds = new DriveSystem();
+        ds = new DriveSystem();
         ls = new LiftSystem();
 
         // hs = new HatchSystem();
@@ -94,5 +99,19 @@ public class Robot extends TimedRobot
     {
         Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
         SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
+    }
+
+    TalonSRX tal = new TalonSRX(1);
+
+    @Override
+    public void testInit() 
+    {
+        tal.setSelectedSensorPosition(0); // Reset the talon position
+    }
+
+    @Override
+    public void testPeriodic() 
+    {
+        SmartDashboard.putNumber("Talon Pos", tal.getSelectedSensorPosition());
     }
 }

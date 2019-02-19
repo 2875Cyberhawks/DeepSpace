@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Encoder;
 
 // The physical lift itself
-public class LiftSystem extends PIDSubsystem {
-
+public class LiftSystem extends PIDSubsystem 
+{
     // The P, I and D constants
     private static final double P = .65;
     private static final double I = 0;

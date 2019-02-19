@@ -19,7 +19,7 @@ public class IO
     private static final double MAX_CHANGE = .085;
     private static double prevZ = 0, prevT = 0;
     private static boolean applyCurve = true;
-    private static final double CREEP_SPEED = .2;
+    private static final double CREEP_SPEED = .4;
 
     private static final double HATCH_SCALE = .3;
     private static final double BALL_SCALE = .5;
@@ -32,6 +32,9 @@ public class IO
 
         if (Math.abs(in) < TRN_DEAD)
             in = 0;
+
+        if (mainJ.getRawButton(5))        
+            in *= CREEP_SPEED;
 
         if (!applyCurve)
             return in;
@@ -132,12 +135,12 @@ public class IO
 
     public static double intakeBall()
     {
-        return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) * INTAKE_SCALE : 0;
+        return second.getTriggerAxis(Hand.kLeft) > IN_DEAD ? second.getTriggerAxis(Hand.kLeft) * INTAKE_SCALE : 0;
     }
 
     public static double shootBall()
     {
-        return second.getTriggerAxis(Hand.kLeft) > IN_DEAD ? second.getTriggerAxis(Hand.kLeft) : 0;
+        return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
     }
 
     public static double climbWheels(){

@@ -11,6 +11,7 @@ import frc.robot.commands.Ball;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Talon;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class BallSystem extends PIDSubsystem {
@@ -19,11 +20,11 @@ public class BallSystem extends PIDSubsystem {
     private static final double I = 0;
     private static final double D = 0;
 
-    private static final int[] DEVICE_NUMS = {0, 1, 2}; // TODO: Determine these
+    private static final int[] DEVICE_NUMS = {1, 12, 10}; // TODO: Determine these - Turn, Lower, Upper
 
-    private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
+//    private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
-    private TalonSRX[] motors = {new TalonSRX(DEVICE_NUMS[1]), new TalonSRX(DEVICE_NUMS[2])};
+    private Talon[] motors = {new Talon(DEVICE_NUMS[1]), new Talon(DEVICE_NUMS[2])};
 
     // private Encoder enc = new Encoder(ENC_PORTS[0], ENC_PORTS[1]);
     // private CentPot enc;
@@ -33,11 +34,13 @@ public class BallSystem extends PIDSubsystem {
     public BallSystem() 
     {
         super(P, I, D);
-        rotTal.set(ControlMode.PercentOutput, 0);
+        // rotTal.set(ControlMode.PercentOutput, 0);
 
         for (int i = 0; i < 2; i++)
-            motors[i].set(ControlMode.PercentOutput, 0);
+            motors[i].set(0);
         
+        // rotTal.setInverted(false); // May need to flip this
+
         // enc = new CentPot(ENC_PORT, -360, 0, ENC_START);
     }
 
@@ -50,14 +53,14 @@ public class BallSystem extends PIDSubsystem {
     @Override
     protected double returnPIDInput() 
     {
-        return rotTal.getSensorCollection().getQuadraturePosition();
-        // return enc.get();
+        return 0;
+    //    return rotTal.getSensorCollection().getQuadraturePosition();
     }
 
     @Override
     protected void usePIDOutput(double output) 
     {
-        rotTal.set(ControlMode.PercentOutput, output);
+        // rotTal.set(ControlMode.PercentOutput, output);
     }
 
     public void moveInc(double input)
@@ -72,20 +75,21 @@ public class BallSystem extends PIDSubsystem {
 
     public void set(double speed, int i)
     {
-        motors[i].set(ControlMode.PercentOutput, speed);
+        motors[i].set(speed);
     }
 
     public void disable()
     {
         super.disable();
-        rotTal.set(ControlMode.PercentOutput, 0);
+        // rotTal.set(ControlMode.PercentOutput, 0);
         for (int i = 0; i < 2; i++){
-            motors[i].set(ControlMode.PercentOutput, 0);
+            motors[i].set(0);
         }
     }
 
     public double getAngle()
     {
-        return rotTal.getSensorCollection().getQuadraturePosition();
+        return 0; 
+        // return rotTal.getSensorCollection().getQuadraturePosition();
     }
 }

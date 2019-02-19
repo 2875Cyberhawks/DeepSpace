@@ -10,7 +10,7 @@
 
 // public class ClimbSystem extends Subsystem {
  
-//     private static final int MOT_PORT = 0;
+//     private static final int MOT_PORT = 11;
 //     private static final int SOL_PORT = 1;
 
 //     private Spark motor = new Spark(MOT_PORT);

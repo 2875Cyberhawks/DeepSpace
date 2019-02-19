@@ -7,11 +7,11 @@
 
 // package frc.robot.subsystems;
 
-// // import frc.robot.commands.Hatch;
+// import frc.robot.commands.Hatch;
 
 // import edu.wpi.first.wpilibj.command.PIDSubsystem;
+// import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.DoubleSolenoid;
-// import edu.wpi.first.wpilibj.Encoder;
 // import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 // import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -24,11 +24,12 @@
 //     private static final double I = 1;
 //     private static final double D = 1;
 
-//     private static final int M_PORT = 0;
+//     private static final int M_PORT = 2;
 //     private static final int[][] SOL_PORTS = {{0, 1},{2, 3}};
 //     private static final int[] ENC_PORTS = {3, 4};
+//     public static final double MAX_ANGLE = 150;
 
-//     private TalonSRX motor = new TalonSRX(M_PORT);
+//     // private TalonSRX motor = new TalonSRX(M_PORT);
 
 //     private DoubleSolenoid openSol = new DoubleSolenoid(SOL_PORTS[0][0], SOL_PORTS[0][1]);
 //     private boolean openSolOpen = false;
@@ -36,33 +37,42 @@
 //     private DoubleSolenoid tiltSol = new DoubleSolenoid(SOL_PORTS[1][0], SOL_PORTS[1][1]);
 //     private boolean tiltSolOpen = false;
 
-//     public HatchSystem() {
+//     public Compressor comp = new Compressor(0);
+
+//     public HatchSystem() 
+//     {
 //         super(P, I, D);
-//         setInputRange(-1, 1);
-//         setOutputRange(-1, 1);
+//         // setInputRange(0, MAX_ANGLE);
+//         // setOutputRange(-1, 1);
 //     }
 
 //     @Override
-//     public void initDefaultCommand() {
+//     public void initDefaultCommand() 
+//     {
 //         setDefaultCommand(new Hatch());
 //     }
 
 //     @Override
-//     protected double returnPIDInput() {
-//         return motor.getSensorCollection().getQuadraturePosition();
+//     protected double returnPIDInput() 
+//     {
+//         return 0;
+//         // return motor.getSensorCollection().getQuadraturePosition();
 //     }
 
 //     @Override
-//     protected void usePIDOutput(double output) {
-//         motor.set(ControlMode.PercentOutput, output);
+//     protected void usePIDOutput(double output) 
+//     {
+//         // motor.set(ControlMode.PercentOutput, output);
 //     }
 
-//     public void moveInc(double input){
-//         setSetpointRelative(input);
+//     public void moveInc(double input)
+//     {
+//         // setSetpointRelative(input);
 //     }
 
-//     public void moveTo(double input){
-//         setSetpoint(input);
+//     public void moveTo(double input)
+//     {
+//         // setSetpoint(input);
 //     }
 
 //     public void toggleHatch()
@@ -78,8 +88,20 @@
 //     public void disable()
 //     {
 //         super.disable();
+//         openSol.close();
+//         tiltSol.close();
+//         // motor.set(ControlMode.PercentOutput, 0);
+//     }
+
+//     public void free()
+//     {
+//         super.free();
 //         openSol.free();
 //         tiltSol.free();
-//         motor.set(ControlMode.PercentOutput, 0);
 //     }
+
+//     // public double getAngle()
+//     // {
+//     //     return motor.getSensorCollection().getQuadraturePosition();
+//     // }
 // }

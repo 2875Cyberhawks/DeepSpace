@@ -15,14 +15,17 @@
 // public class Hatch extends Command {
     
 //     private static final double MIN_HEIGHT = 10;
-//     private static final double SAFE_ANGLE = 20;
+//     private static final double SAFE_ANGLE = 40;
 
-//     public Hatch() {
+//     public Hatch() 
+//     {
 //         requires(Robot.hs);
 //     }
 
     
-//     protected void initialize() {
+//     protected void initialize() 
+//     {
+//         Robot.hs.comp.start();
 //         Robot.hs.enable();
 //     }
 
@@ -35,10 +38,10 @@
 //         if (IO.toggleTilt())
 //             Robot.hs.toggleTilt();
 
-//          if (Math.abs(IO.hatchAxis() > 0)
-//             Robot.hs.moveInc(IO.hatchAxis());
-//         else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.hs.getAngle() < SAFE_ANGLE)
-//             Robot.hs.moveTo(SAFE_ANGLE);
+//         //  if (Math.abs(IO.hatchAxis()) > 0)
+//         //     Robot.hs.moveInc(IO.hatchAxis());
+//         // else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.hs.getAngle() < SAFE_ANGLE)
+//         //     Robot.hs.moveTo(SAFE_ANGLE);
 //     }
 
     
