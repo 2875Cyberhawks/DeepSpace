@@ -1,113 +1,117 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                                                         */
-/* Open Source Software - may be modified and shared by FRC teams. The code     */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                                                                                             */
-/*----------------------------------------------------------------------------*/
+// /*----------------------------------------------------------------------------*/
+// /* Copyright (c) 2018 FIRST. All Rights Reserved.                                                         */
+// /* Open Source Software - may be modified and shared by FRC teams. The code     */
+// /* must be accompanied by the FIRST BSD license file in the root directory of */
+// /* the project.                                                                                                                             */
+// /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import frc.robot.commands.Ball;
+// import frc.robot.commands.Ball;
 
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.command.PIDSubsystem;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.Talon;
-import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+// import edu.wpi.first.wpilibj.Talon;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class BallSystem extends PIDSubsystem {
+// public class BallSystem extends PIDSubsystem {
 
-    private static final double P = .7;
-    private static final double I = .005;
-    private static final double D = 0;
+//     private static final double P = .7;
+//     private static final double I = .005;
+//     private static final double D = 0;
 
-    private static final int[] DEVICE_NUMS = {1, 12, 10}; // Turn, Lower, Upper
+//     private static final int[] DEVICE_NUMS = {1, 12, 10}; // Turn, Lower, Upper
 
-    public static final double MIN = 2070, ZERO = 5480, MAX = 6000; // Forward, Straight, Back
-    private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
+//     public static final double MIN = 2070, ZERO = 5480, MAX = 6000; // Forward, Straight, Back
+//     private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
-    private static final double MAX_VOLTAGE = .4;
+//     private static final double MAX_VOLTAGE = .4;
 
-    private static final double MAX_TURN_SPEED = 100;
+//     private static final double MAX_TURN_SPEED = 100;
 
-    private Talon[] motors = {new Talon(DEVICE_NUMS[1]), new Talon(DEVICE_NUMS[2])};
-    
-    public BallSystem() 
-    {
-        super(P, I, D);
-        setInputRange(-1, 1);
-        setOutputRange(-1, 1);
+//     private Talon[] motors = {new Talon(DEVICE_NUMS[1]), new Talon(DEVICE_NUMS[2])};
 
-        for (int i = 0; i < 2; i++)
-            motors[i].set(0);
-    }
+//     public BallSystem() 
+//     {
+//         super(P, I, D);
+//         setInputRange(-1, 1);
+//         setOutputRange(-1, 1);
 
-    @Override
-    public void initDefaultCommand() 
-    {
-        setDefaultCommand(new Ball());    
-    }
+//         for (int i = 0; i < 2; i++)
+//             motors[i].set(0);
+//     }
 
-    @Override
-    protected double returnPIDInput() 
-    {
-        return (rotTal.getSensorCollection().getPulseWidthPosition() - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
-    }
+//     @Override
+//     public void initDefaultCommand() 
+//     {
+//         setDefaultCommand(new Ball());    
+//     }
 
-    @Override
-    protected void usePIDOutput(double output) 
-    {
-        SmartDashboard.putNumber("PID in", returnPIDInput());
-        SmartDashboard.putNumber("PID raw", rotTal.getSensorCollection().getPulseWidthPosition());
-        SmartDashboard.putNumber("PID out", output);
-        SmartDashboard.putNumber("PID set", getPIDController().getSetpoint());
-        SmartDashboard.putNumber("PID err", getPIDController().getError());
-        SmartDashboard.putNumber("Tal vlt", rotTal.getMotorOutputPercent());
+//     public double getEnc()
+//     {
+//         return rotTal.getSensorCollection().getPulseWidthPosition();
+//     }
+//     @Override
+//     protected double returnPIDInput() 
+//     {
+//         return (getEnc() - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
+//     }
 
-        if (output > MAX_VOLTAGE)
-            output = MAX_VOLTAGE;
-        else if (output < -MAX_VOLTAGE)
-            output = -MAX_VOLTAGE;
+//     @Override
+//     protected void usePIDOutput(double output) 
+//     {
+//         SmartDashboard.putNumber("PID in", returnPIDInput());
+//         SmartDashboard.putNumber("PID raw", rotTal.getSensorCollection().getPulseWidthPosition());
+//         SmartDashboard.putNumber("PID out", output);
+//         SmartDashboard.putNumber("PID set", getPIDController().getSetpoint());
+//         SmartDashboard.putNumber("PID err", getPIDController().getError());
+//         SmartDashboard.putNumber("Tal vlt", rotTal.getMotorOutputPercent());
 
-        //rotTal.set(ControlMode.PercentOutput, -output);
-    }
+//         if (output > MAX_VOLTAGE)
+//             output = MAX_VOLTAGE;
+//         else if (output < -MAX_VOLTAGE)
+//             output = -MAX_VOLTAGE;
 
-    public void moveInc(double input)
-    {
-        input = getPIDController().getSetpoint() + (MAX_TURN_SPEED * input);
+//         //rotTal.set(ControlMode.PercentOutput, -output);
+//     }
+
+//     public void moveInc(double input)
+//     {
+//         input = getPIDController().getSetpoint() + (MAX_TURN_SPEED * input);
         
-        if (input > 1)
-            moveTo(1);
-        else if (input < -1)
-            moveTo(-1);
-        else
-            moveTo(input);
-    }
+//         if (input > 1)
+//             moveTo(1);
+//         else if (input < -1)
+//             moveTo(-1);
+//         else
+//             moveTo(input);
+//     }
 
-    public void moveTo(double input)
-    {
-        setSetpoint(input);
-    }
+//     public void moveTo(double input)
+//     {
+//         setSetpoint(input);
+//     }
 
-    public void set(double speed, int i)
-    {
-        motors[i].set(speed);
-    }
+//     public void set(double speed, int i)
+//     {
+//         motors[i].set(speed);
+//     }
 
-    public void disable()
-    {
-        super.disable();
+//     public void disable()
+//     {
+//         super.disable();
 
-        rotTal.set(ControlMode.PercentOutput, 0);
+//         rotTal.set(ControlMode.PercentOutput, 0);
 
-        for (int i = 0; i < 2; i++){
-            motors[i].set(0);
-        }
-    }
+//         for (int i = 0; i < 2; i++){
+//             motors[i].set(0);
+//         }
+//     }
 
-    public double getAngle()
-    {
-        return rotTal.getSensorCollection().getPulseWidthPosition();
-    }
-}
+//     public double getAngle()
+//     {
+//         return rotTal.getSensorCollection().getPulseWidthPosition();
+//     }
+// }

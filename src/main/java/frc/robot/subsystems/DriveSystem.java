@@ -8,6 +8,8 @@
 // import edu.wpi.first.wpilibj.PIDController;
 // import edu.wpi.first.wpilibj.Spark;
 
+// Limit switch ports: 9, 8, 7 for top, low, lowest
+
 // // The drivetrain itself
 // public class DriveSystem extends Subsystem {
 //     public static final double MOVE_MENT = .2;

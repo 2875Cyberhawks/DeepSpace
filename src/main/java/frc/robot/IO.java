@@ -143,7 +143,8 @@ public class IO
         return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
     }
 
-    public static double climbWheels(){
+    public static double climbWheels()
+    {
         if (mainJ.getRawButtonPressed(11))
             return CLIMB_WHEEL_SPEED;
         else if (mainJ.getRawButtonPressed(12))
@@ -152,7 +153,13 @@ public class IO
             return 0;
     }
 
-    public static boolean toggleClimb(){
+    public static boolean toggleClimb()
+    {
         return mainJ.getRawButtonPressed(9);
+    }
+
+    public static boolean switchCamera()
+    {
+        return mainJ.getRawButtonPressed(10);
     }
 }

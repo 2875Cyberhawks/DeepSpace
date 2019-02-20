@@ -5,8 +5,7 @@ package frc.robot;
 // import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
 
-// import frc.robot.subsystems.HatchSystem;
-import frc.robot.subsystems.BallSystem;
+// import frc.robot.subsystems.BallSystem;
 // import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -17,7 +16,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 
-// import frc.robot.subsystems.BallSystem;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.cscore.UsbCamera;
 import frc.robot.subsystems.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -35,10 +35,13 @@ public class Robot extends TimedRobot
     public static AHRS gyro;
 
     // public static DriveSystem ds;
-    // public static LiftSystem ls;
-    public static BallSystem bs;
+    public static LiftSystem ls;
+    // public static BallSystem bs;
 
-    //public static HatchSystem hs;
+    // public static VisionSink vis = new VisionSink()
+    // public static UsbCamera[] cams = new UsbCamera[2];
+
+    public static HatchSystem hs;
     // public static ClimbSystem cs;
 
     public static double getAngle()
@@ -64,11 +67,14 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
+        // for (int i = 0; i < 2; i++)
+        //     cams[i] = CameraServer.getInstance().startAutomaticCapture(i);
+        
         // ds = new DriveSystem();
-        // ls = new LiftSystem();
+        ls = new LiftSystem();
 
-        //hs = new HatchSystem();
-        bs = new BallSystem();
+        hs = new HatchSystem();
+        // bs = new BallSystem();
         // cs = new ClimbSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
@@ -93,8 +99,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit() 
     {
-        // ls.reset();
-        // ls.moveToHeight(0);
+        ls.init();
     }
 
     // On each step during periodic:
@@ -113,5 +118,6 @@ public class Robot extends TimedRobot
     @Override
     public void testPeriodic() 
     {
+        
     }
 }
