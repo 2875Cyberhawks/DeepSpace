@@ -72,8 +72,7 @@ public class LiftSystem extends PIDSubsystem
         encoder.setDistancePerPulse(DISTANCE_PER_PULSE); // Set distance per pulse 
 
         // Create the SpeedControllerGroup
-        motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]),
-                                          new Spark(MOTOR_PORTS[1]));
+        motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]), new Spark(MOTOR_PORTS[1]));
        
         min = new DigitalInput(7);
         rest = new DigitalInput(8);

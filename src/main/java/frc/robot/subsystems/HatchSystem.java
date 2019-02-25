@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import frc.robot.commands.Hatch;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -19,7 +20,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
     
 
-public class HatchSystem extends PIDSubsystem {
+// public class HatchSystem extends PIDSubsystem {
+public class HatchSystem extends Subsystem { 
 
     private static final double P = .6;
     private static final double I = .005;
@@ -39,12 +41,27 @@ public class HatchSystem extends PIDSubsystem {
     
     public HatchSystem() 
     {
-        super(P, I, D);
+        // super(P, I, D);
         // setInputRange(0, MAX_ANGLE);
-        setOutputRange(-1, 1);
-        setInputRange(-1, 1);
+        // setOutputRange(-1, 1);
+        // setInputRange(-1, 1);
 
-        setPercentTolerance(10);
+        // setPercentTolerance(10);
+
+        openSol.set(Value.kOff);
+        tiltSol.set(Value.kOff);
+        // if (openSol.get() == Value.kForward)
+        //     openSol.set(Value.kReverse);
+    }
+
+    public void setRot(double d)
+    {
+        motor.set(ControlMode.PercentOutput, d);
+    }
+
+    public double getAng()
+    {
+        return motor.getSensorCollection().getPulseWidthPosition();
     }
 
     @Override
@@ -53,38 +70,39 @@ public class HatchSystem extends PIDSubsystem {
         setDefaultCommand(new Hatch());
     }
 
-    @Override
-    protected double returnPIDInput() 
-    {
-        double out = motor.getSensorCollection().getPulseWidthPosition();
-        return (out - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
-    }
+    // @Override
+    // protected double returnPIDInput() 
+    // {
+    //     double out = motor.getSensorCollection().getPulseWidthPosition();
+    //     // return (out - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
+    // }
 
-    @Override
-    protected void usePIDOutput(double output) 
-    {
-        SmartDashboard.putNumber("PID set", getSetpoint());
-        SmartDashboard.putNumber("PID in", returnPIDInput());
-        SmartDashboard.putNumber("PID error", getPIDController().getError());
-        SmartDashboard.putNumber("PID out", output);
+    // @Override
+    // protected void usePIDOutput(double output) 
+    // {
+    //     SmartDashboard.putNumber("PID set", getSetpoint());
+    //     SmartDashboard.putNumber("PID in", returnPIDInput());
+    //     SmartDashboard.putNumber("PID error", getPIDController().getError());
+    //     SmartDashboard.putNumber("PID out", output);
+    //     SmartDashboard.putNumber("PID raw", motor.getSensorCollection().getPulseWidthPosition());
 
-        if (output > MAX_VOLTAGE)
-            output = MAX_VOLTAGE;
-        else if (output < -MAX_VOLTAGE)
-            output = -MAX_VOLTAGE;
+    //     if (output > MAX_VOLTAGE)
+    //         output = MAX_VOLTAGE;
+    //     else if (output < -MAX_VOLTAGE)
+    //         output = -MAX_VOLTAGE;
 
-        motor.set(ControlMode.PercentOutput, output);
-    }
+    //     // motor.set(ControlMode.PercentOutput, output);
+    // }
 
-    public void moveInc(double input)
-    {
-        moveTo(getPIDController().getSetpoint() + input);
-    }
+    // public void moveInc(double input)
+    // {
+    //     // moveTo(getPIDController().getSetpoint() + input);
+    // }
 
-    public void moveTo(double input)
-    {
-        setSetpoint(input);
-    }
+    // public void moveTo(double input)
+    // {
+    //  // setSetpoint(input);
+    // }
 
     public void toggleHatch()
     {
@@ -98,19 +116,19 @@ public class HatchSystem extends PIDSubsystem {
 
     public void disable()
     {
-        super.disable();
+        // super.disable();
         openSol.close();
         tiltSol.close();
-        // motor.set(ControlMode.PercentOutput, 0);
+        motor.set(ControlMode.PercentOutput, 0);
     }
-
-    public void free()
-    {
-        super.free();
-        motor.DestroyObject();
-        openSol.free();
-        tiltSol.free();
-    }
+// 
+    // public void free()
+    // {
+    //     super.free();
+    //     motor.DestroyObject();
+    //     openSol.free();
+    //     tiltSol.free();
+    // }
 
     public double getAngle()
     {

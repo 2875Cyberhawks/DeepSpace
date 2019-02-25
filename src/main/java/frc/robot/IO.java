@@ -21,8 +21,8 @@ public class IO
     private static boolean applyCurve = true;
     private static final double CREEP_SPEED = .4;
 
-    private static final double HATCH_SCALE = .3;
-    private static final double BALL_SCALE = .5;
+    private static final double HATCH_SCALE = 1;
+    private static final double BALL_SCALE = 1;
     private static final double INTAKE_SCALE = .4;
     private static final double CLIMB_WHEEL_SPEED = .6;
 

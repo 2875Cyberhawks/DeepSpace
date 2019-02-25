@@ -1,12 +1,6 @@
 package frc.robot;
 
-// import frc.robot.commands.Drive;
-// import frc.robot.subsystems.DriveSystem;
-// import frc.robot.subsystems.LiftSystem;
 import frc.robot.util.Vector;
-
-// import frc.robot.subsystems.BallSystem;
-// import frc.robot.subsystems.ClimbSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.PIDCommand;
@@ -34,12 +28,9 @@ public class Robot extends TimedRobot
 {
     public static AHRS gyro;
 
-    // public static DriveSystem ds;
+    public static DriveSystem ds;
     public static LiftSystem ls;
-    // public static BallSystem bs;
-
-    // public static VisionSink vis = new VisionSink()
-    // public static UsbCamera[] cams = new UsbCamera[2];
+    public static BallSystem bs;
 
     public static HatchSystem hs;
     // public static ClimbSystem cs;
@@ -70,11 +61,11 @@ public class Robot extends TimedRobot
         // for (int i = 0; i < 2; i++)
         //     cams[i] = CameraServer.getInstance().startAutomaticCapture(i);
         
-        // ds = new DriveSystem();
+        ds = new DriveSystem();
         ls = new LiftSystem();
 
         hs = new HatchSystem();
-        // bs = new BallSystem();
+        bs = new BallSystem();
         // cs = new ClimbSystem();
 
         System.out.println("boi.deploy() returned true\nboi.run()...");
@@ -100,6 +91,7 @@ public class Robot extends TimedRobot
     public void teleopInit() 
     {
         ls.init();
+        bs.init();
     }
 
     // On each step during periodic:
@@ -108,6 +100,7 @@ public class Robot extends TimedRobot
     {
         Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
         SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
+        SmartDashboard.putNumber("HATCH ANG", hs.getAng());
     }
 
     @Override
