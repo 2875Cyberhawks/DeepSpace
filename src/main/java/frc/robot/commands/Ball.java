@@ -31,8 +31,6 @@ public class Ball extends Command
     
     protected void execute() 
     {
-        // Robot.bs.moveInc(IO.ballAxis() * MAX_BALL_SPEED);
- 
         if (IO.intakeBall() > 0)
         {
             Robot.bs.set(IO.intakeBall(), 0);

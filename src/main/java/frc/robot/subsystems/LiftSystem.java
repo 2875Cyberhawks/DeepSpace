@@ -34,6 +34,9 @@ public class LiftSystem extends PIDSubsystem
     // The ports for the encoders
     private static final int[] ENC_PORTS = {2, 3};
 
+    // The ports for the limit switches
+    private static final int[] LIMIT_PORTS = {7, 8, 9}; // min, rest, max
+
     // The encoder for tracking the height of the lift
     private Encoder encoder;
    
@@ -74,10 +77,9 @@ public class LiftSystem extends PIDSubsystem
         // Create the SpeedControllerGroup
         motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]), new Spark(MOTOR_PORTS[1]));
        
-        min = new DigitalInput(7);
-        rest = new DigitalInput(8);
-        max = new DigitalInput(9);
-
+        min = new DigitalInput(LIMIT_PORTS[0]);
+        rest = new DigitalInput(LIMIT_PORTS[1]);
+        max = new DigitalInput(LIMIT_PORTS[2]);
     }
 
     public void init() 

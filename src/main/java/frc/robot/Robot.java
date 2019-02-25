@@ -1,27 +1,12 @@
 package frc.robot;
 
-import frc.robot.util.Vector;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.cscore.UsbCamera;
 import frc.robot.subsystems.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
-
-/* TODO:
-    - Remove Constants from IO
-    - Comments
-*/
 
 // Our robot
 public class Robot extends TimedRobot
@@ -31,10 +16,57 @@ public class Robot extends TimedRobot
     public static DriveSystem ds;
     public static LiftSystem ls;
     public static BallSystem bs;
-
     public static HatchSystem hs;
     // public static ClimbSystem cs;
 
+    private boolean startedAuto = false;
+
+    // On robot startup:
+    @Override
+    public void robotInit()
+    {
+        gyro = new AHRS(SPI.Port.kMXP);
+        gyro.reset();
+
+        ds = new DriveSystem();
+        ls = new LiftSystem();
+
+        hs = new HatchSystem();
+        bs = new BallSystem();
+        // cs = new ClimbSystem();
+
+        System.out.println("boi.deploy() returned true\nboi.run()...");
+    }
+
+    @Override
+    public void autonomousInit() 
+    {
+        startedAuto = true;
+        gyro.reset();
+        ls.init();
+        bs.init();
+    }
+
+    @Override
+    public void autonomousPeriodic() 
+    {
+        teleopPeriodic();
+    }
+
+    @Override
+    public void teleopInit() 
+    {
+        if (!startedAuto)
+            autonomousInit();
+    }
+
+    // On each step during periodic:
+    @Override
+    public void teleopPeriodic()
+    {
+        Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
+    }
+    
     public static double getAngle()
     {
         double gyAng = gyro.getAngle();
@@ -49,68 +81,5 @@ public class Robot extends TimedRobot
         }
 
         return gyAng;
-    }
-
-    // On robot startup:
-    @Override
-    public void robotInit()
-    {
-        gyro = new AHRS(SPI.Port.kMXP);
-        gyro.reset();
-
-        // for (int i = 0; i < 2; i++)
-        //     cams[i] = CameraServer.getInstance().startAutomaticCapture(i);
-        
-        ds = new DriveSystem();
-        ls = new LiftSystem();
-
-        hs = new HatchSystem();
-        bs = new BallSystem();
-        // cs = new ClimbSystem();
-
-        System.out.println("boi.deploy() returned true\nboi.run()...");
-    }
-
-    @Override
-    public void autonomousInit() 
-    {
-        gyro.reset();
-    }
-
-    @Override
-    public void autonomousPeriodic() 
-    {
-        // Vector[][] rots = Drive.turnToAngle(gyro.getAngle(), 90, 1.8, 0);
-        // ds.setVects(rots);
-
-        Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
-        SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
-    }
-
-    @Override
-    public void teleopInit() 
-    {
-        ls.init();
-        bs.init();
-    }
-
-    // On each step during periodic:
-    @Override
-    public void teleopPeriodic()
-    {
-        Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
-        SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
-        SmartDashboard.putNumber("HATCH ANG", hs.getAng());
-    }
-
-    @Override
-    public void testInit() 
-    {
-    }
-
-    @Override
-    public void testPeriodic() 
-    {
-        
     }
 }
