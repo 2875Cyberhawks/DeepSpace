@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                                                         */
-/* Open Source Software - may be modified and shared by FRC teams. The code     */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                                                                                             */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import frc.robot.commands.Lift;
@@ -77,6 +70,7 @@ public class LiftSystem extends PIDSubsystem
         // Create the SpeedControllerGroup
         motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]), new Spark(MOTOR_PORTS[1]));
        
+        // Create the Limit Switches
         min = new DigitalInput(LIMIT_PORTS[0]);
         rest = new DigitalInput(LIMIT_PORTS[1]);
         max = new DigitalInput(LIMIT_PORTS[2]);
@@ -84,9 +78,10 @@ public class LiftSystem extends PIDSubsystem
 
     public void init() 
     {
-        System.out.println("initializing");
+        System.out.println("Limit Starting");
         encoder.reset();
         setSetpoint(JUMP_DISTANCE);
+
         isInit = true;
         initTime = new Timer();
         initTime.start();
@@ -115,10 +110,10 @@ public class LiftSystem extends PIDSubsystem
             if (!rest.get())
                 isInit = false;
 
-            if (initTime.get() > MAX_TIME_INIT){
+            if (initTime.get() > MAX_TIME_INIT)
+            {
                 isInit = false;
                 System.out.println("end by time");
-
             }
 
             if (!isInit)
@@ -142,18 +137,18 @@ public class LiftSystem extends PIDSubsystem
         }
         else if (getSetpoint() < getHeight() && !rest.get() && !climbMode)
         {
-            encoder.reset();
             setSetpoint(getHeight());
+            encoder.reset();
             return;
         }
 
         // The output of the PID loop should be the motor's speed
-         if (output > MAX_SPD)
-             motors.set(MAX_SPD);
-         else if (output < -MAX_SPD)
-             motors.set(-MAX_SPD);
-         else
-             motors.set(output);
+        if (output > MAX_SPD)
+            motors.set(MAX_SPD);
+        else if (output < -MAX_SPD)
+            motors.set(-MAX_SPD);
+        else
+            motors.set(output);
     }
 
     // Move to a given height (double)

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.subsystems.*;
+import frc.robot.util.CamAlt;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -12,6 +13,7 @@ import com.kauailabs.navx.frc.AHRS;
 public class Robot extends TimedRobot
 {
     public static AHRS gyro;
+    public static CamAlt cam;
 
     public static DriveSystem ds;
     public static LiftSystem ls;
@@ -28,6 +30,8 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
+        cam = new CamAlt(0, 1);
+
         ds = new DriveSystem();
         ls = new LiftSystem();
 
@@ -35,7 +39,7 @@ public class Robot extends TimedRobot
         bs = new BallSystem();
         // cs = new ClimbSystem();
 
-        System.out.println("boi.deploy() returned true\nboi.run()...");
+        System.out.println("Robot Starting");
     }
 
     @Override
@@ -43,6 +47,7 @@ public class Robot extends TimedRobot
     {
         startedAuto = true;
         gyro.reset();
+        cam.init();
         ls.init();
         bs.init();
     }
@@ -64,6 +69,9 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic()
     {
+        if (IO.switchCamera())
+            cam.toggle();
+
         Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
     }
     
