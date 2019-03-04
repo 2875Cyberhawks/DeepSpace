@@ -19,7 +19,7 @@ public class Robot extends TimedRobot
     public static LiftSystem ls;
     public static BallSystem bs;
     public static HatchSystem hs;
-    // public static ClimbSystem cs;
+    public static ClimbSystem cs;
 
     private boolean startedAuto = false;
 
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot
 
         hs = new HatchSystem();
         bs = new BallSystem();
-        // cs = new ClimbSystem();
+        cs = new ClimbSystem();
 
         System.out.println("Robot Starting");
     }
@@ -49,7 +49,6 @@ public class Robot extends TimedRobot
         gyro.reset();
         cam.init();
         ls.init();
-        bs.init();
     }
 
     @Override

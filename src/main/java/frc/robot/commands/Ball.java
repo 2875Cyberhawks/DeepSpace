@@ -10,6 +10,7 @@ public class Ball extends Command
     private static final double MIN_HEIGHT = 10;
     private static final double SAFE_ANGLE = 20;
     private static final double MAX_BALL_SPEED = .0001;
+    private static final double TURN_VEL = .02;
 
     public Ball() 
     {
@@ -18,27 +19,19 @@ public class Ball extends Command
 
     protected void initialize() 
     {
-        Robot.bs.enable();
-        // Robot.bs.moveTo(0);
+        ;;
     }
     
     protected void execute() 
     {
+        Robot.bs.moveInc(IO.ballAxis() * TURN_VEL * Robot.bs.FULL_TURN);
+
         if (IO.intakeBall() > 0)
-        {
-            Robot.bs.set(IO.intakeBall(), 0);
-            Robot.bs.set(IO.intakeBall(), 1);
-        }
+            Robot.bs.shoot(IO.intakeBall());
         else if (IO.shootBall() > 0)
-        {
-            Robot.bs.set(-IO.shootBall(), 0);
-            Robot.bs.set(-IO.shootBall(), 1);
-        }
+            Robot.bs.shoot(-IO.shootBall());
         else
-        {
-           Robot.bs.set(0, 0);
-           Robot.bs.set(0, 1); 
-        }
+           Robot.bs.shoot(0);
     }
     
     protected boolean isFinished() 
@@ -55,4 +48,4 @@ public class Ball extends Command
     {
         Robot.bs.disable();
     }
-}// 
+}

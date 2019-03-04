@@ -27,7 +27,7 @@ public class Hatch extends Command {
     
     protected void initialize() 
     {
-        // Robot.hs.enable();
+        ;;
     }
 
     
@@ -40,11 +40,7 @@ public class Hatch extends Command {
         if (IO.toggleTilt())
             Robot.hs.toggleTilt();
 
-        //  if (Math.abs(IO.hatchAxis()) > 0)
-        SmartDashboard.putNumber("Hatch Axis", -IO.hatchAxis() * MAX_SPEED);
         Robot.hs.setRot(-IO.hatchAxis() * MAX_SPEED);
-        // else if (Robot.ls.getHeight() < MIN_HEIGHT && Robot.hs.getAngle() < SAFE_ANGLE)
-        //     Robot.hs.moveTo(SAFE_ANGLE);
     }
 
     

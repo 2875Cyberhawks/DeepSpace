@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
     
 
 // public class HatchSystem extends PIDSubsystem {
@@ -38,20 +39,35 @@ public class HatchSystem extends Subsystem {
     private DoubleSolenoid openSol = new DoubleSolenoid(SOL_PORTS[0][0], SOL_PORTS[0][1]);
     
     private DoubleSolenoid tiltSol = new DoubleSolenoid(SOL_PORTS[1][0], SOL_PORTS[1][1]);
+
+    private double setpoint;
     
     public HatchSystem() 
     {
-        // super(P, I, D);
-        // setInputRange(0, MAX_ANGLE);
-        // setOutputRange(-1, 1);
-        // setInputRange(-1, 1);
-
-        // setPercentTolerance(10);
-
         openSol.set(Value.kOff);
         tiltSol.set(Value.kOff);
-        // if (openSol.get() == Value.kForward)
-        //     openSol.set(Value.kReverse);
+        
+        motor.configFactoryDefault();
+
+        motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        motor.setSelectedSensorPosition(0);
+        
+        motor.configMotionCruiseVelocity(750);
+        motor.configMotionAcceleration(1500);
+    
+        motor.configContinuousCurrentLimit(10);
+        motor.enableCurrentLimit(true);
+    
+        motor.configNominalOutputForward(0);
+        motor.configNominalOutputReverse(0);
+        motor.configPeakOutputForward(1);
+        motor.configPeakOutputReverse(-1);
+        motor.setIntegralAccumulator(0);
+
+        motor.config_kP(0, P);
+        motor.config_kI(0, I); 
+        motor.config_kD(0, D);
+        motor.config_kF(0, 0);
     }
 
     public void setRot(double d)
@@ -59,7 +75,7 @@ public class HatchSystem extends Subsystem {
         motor.set(ControlMode.PercentOutput, d);
     }
 
-    public double getAng()
+    public double getAbs()
     {
         return motor.getSensorCollection().getPulseWidthPosition();
     }
@@ -70,39 +86,20 @@ public class HatchSystem extends Subsystem {
         setDefaultCommand(new Hatch());
     }
 
-    // @Override
-    // protected double returnPIDInput() 
-    // {
-    //     double out = motor.getSensorCollection().getPulseWidthPosition();
-    //     // return (out - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
-    // }
+    public void moveInc(double diff) // Send in a positional difference in
+    {
+        if (getAbs() > MAX && diff > 0)
+            diff = 0;
+        else if (getAbs() < MIN && diff < 0)
+            diff = 0;
+        moveTo(setpoint + diff);
+    }
 
-    // @Override
-    // protected void usePIDOutput(double output) 
-    // {
-    //     SmartDashboard.putNumber("PID set", getSetpoint());
-    //     SmartDashboard.putNumber("PID in", returnPIDInput());
-    //     SmartDashboard.putNumber("PID error", getPIDController().getError());
-    //     SmartDashboard.putNumber("PID out", output);
-    //     SmartDashboard.putNumber("PID raw", motor.getSensorCollection().getPulseWidthPosition());
-
-    //     if (output > MAX_VOLTAGE)
-    //         output = MAX_VOLTAGE;
-    //     else if (output < -MAX_VOLTAGE)
-    //         output = -MAX_VOLTAGE;
-
-    //     // motor.set(ControlMode.PercentOutput, output);
-    // }
-
-    // public void moveInc(double input)
-    // {
-    //     // moveTo(getPIDController().getSetpoint() + input);
-    // }
-
-    // public void moveTo(double input)
-    // {
-    //  // setSetpoint(input);
-    // }
+    public void moveTo(double input)
+    {
+        motor.set(ControlMode.MotionMagic, input);
+        setpoint = input;
+    }
 
     public void toggleHatch()
     {
@@ -116,22 +113,8 @@ public class HatchSystem extends Subsystem {
 
     public void disable()
     {
-        // super.disable();
         openSol.close();
         tiltSol.close();
         motor.set(ControlMode.PercentOutput, 0);
-    }
-// 
-    // public void free()
-    // {
-    //     super.free();
-    //     motor.DestroyObject();
-    //     openSol.free();
-    //     tiltSol.free();
-    // }
-
-    public double getAngle()
-    {
-        return motor.getSensorCollection().getPulseWidthPosition();
     }
 }

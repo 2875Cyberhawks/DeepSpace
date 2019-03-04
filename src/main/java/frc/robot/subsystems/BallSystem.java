@@ -1,47 +1,60 @@
 package frc.robot.subsystems;
 
 import frc.robot.commands.Ball;
-
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.Talon;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-public class BallSystem extends PIDSubsystem {
+public class BallSystem extends Subsystem {
 
-    private static final double P = .7;
-    private static final double I = .005;
+    private static final double P = 0;
+    private static final double I = 0;
     private static final double D = 0;
 
-    private static final int[] DEVICE_NUMS = {1, 12, 10}; // Turn, Lower, Upper
+    private static final int[] DEVICE_NUMS = {1, 12}; // Turn, Lower
+    public static final double FULL_TURN = 4096; // One full turn of the encoder
 
-    public static final double MIN = -3045, ZERO = 500, MAX = 600; // Forward, Straight, Back
+    public static final double MIN = -3045, MAX = 600; // Forward, Straight, Back
     private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
+
+    private double setpoint = 0;
 
     private static final double MAX_VOLTAGE = .4;
 
-    private static final double MAX_TURN_SPEED = 100;
+    private static final double MAX_TURN_SPEED = 1;
 
-    private Talon[] motors = {new Talon(DEVICE_NUMS[1]), new Talon(DEVICE_NUMS[2])};
+    private Talon shoot = new Talon(DEVICE_NUMS[1]);
 
     public BallSystem() 
     {
-        super(P, I, D);
-        setInputRange(-1, 1);
-        setOutputRange(-1, 1);
+        shoot.set(0);
 
-        for (int i = 0; i < 2; i++)
-            motors[i].set(0);
+        rotTal.configFactoryDefault();
+
+        rotTal.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        rotTal.setSelectedSensorPosition(0);
         
-        init();
-    }
+        rotTal.configMotionCruiseVelocity(750);
+        rotTal.configMotionAcceleration(1500);
+    
+        rotTal.configContinuousCurrentLimit(10);
+        rotTal.enableCurrentLimit(true);
+    
+        rotTal.configNominalOutputForward(0);
+        rotTal.configNominalOutputReverse(0);
+        rotTal.configPeakOutputForward(1);
+        rotTal.configPeakOutputReverse(-1);
+        rotTal.setIntegralAccumulator(0);
 
-    public void init()
-    {
-        System.out.println("INIT");
-        setSetpoint(0);
+        rotTal.config_kP(0, P);
+        rotTal.config_kI(0, I); 
+        rotTal.config_kD(0, D);
+        rotTal.config_kF(0, 0);
     }
 
     @Override
@@ -50,69 +63,33 @@ public class BallSystem extends PIDSubsystem {
         setDefaultCommand(new Ball());    
     }
 
-    public double getEnc()
+    public void moveInc(double diff) // Send in a positional difference in
     {
-        return rotTal.getSensorCollection().getPulseWidthPosition();
+        if (getAbs() > MAX && diff > 0)
+            diff = 0;
+        else if (getAbs() < MIN && diff < 0)
+            diff = 0;
+        moveTo(setpoint + diff);
     }
 
-    @Override
-    protected double returnPIDInput() 
+    public void moveTo(double input)
     {
-        return (getEnc() - ((MIN+MAX)/2)) / ((MAX-MIN)/2);
+        rotTal.set(ControlMode.MotionMagic, input);
+        setpoint = input;
     }
 
-    @Override
-    protected void usePIDOutput(double output) 
+    public void shoot(double speed)
     {
-        SmartDashboard.putNumber("PID in", returnPIDInput());
-        SmartDashboard.putNumber("PID raw", rotTal.getSensorCollection().getPulseWidthPosition());
-        SmartDashboard.putNumber("PID out", output);
-        SmartDashboard.putNumber("PID set", getPIDController().getSetpoint());
-        SmartDashboard.putNumber("PID err", getPIDController().getError());
-        SmartDashboard.putNumber("Tal vlt", rotTal.getMotorOutputPercent());
-
-        if (output > MAX_VOLTAGE)
-            output = MAX_VOLTAGE;
-        else if (output < -MAX_VOLTAGE)
-            output = -MAX_VOLTAGE;
-
-        // rotTal.set(ControlMode.PercentOutput, -output);
-    }
-
-    // public void moveInc(double input)
-    // {
-    //     input = getPIDController().getSetpoint() + (MAX_TURN_SPEED * input);
-        
-    //     if (input > 1)
-    //         moveTo(1);
-    //     else if (input < -1)
-    //         moveTo(-1);
-    //     else
-    //         moveTo(input);
-    // }
-
-    // public void moveTo(double input)
-    // {
-    //     setSetpoint(input);
-    // }
-
-    public void set(double speed, int i)
-    {
-        motors[i].set(speed);
+        shoot.set(speed);
     }
 
     public void disable()
     {
-        super.disable();
-
         rotTal.set(ControlMode.PercentOutput, 0);
-
-        for (int i = 0; i < 2; i++){
-            motors[i].set(0);
-        }
+        shoot.set(0);
     }
 
-    public double getAngle()
+    public double getAbs()
     {
         return rotTal.getSensorCollection().getPulseWidthPosition();
     }
