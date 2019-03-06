@@ -31,7 +31,10 @@ public class HatchSystem extends Subsystem {
 
     public static final double FULL_TURN = 4096;
     
-    public static final double MIN = 3150, MAX = 8630;
+    public static final double S_MIN = 3150, S_MAX = 8630; // No longer valid
+    public static final double TO_MIN = 20, TO_MAX = 20; // Distance from center point to min and max
+    private double center = 6000; // to be tuned
+    public boolean limited = true; 
 
     private TalonSRX motor = new TalonSRX(M_PORT);
 
@@ -75,6 +78,11 @@ public class HatchSystem extends Subsystem {
         motor.set(ControlMode.PercentOutput, d);
     }
 
+    public double setCent()
+    {
+        return center = motor.getSelectedSensorPosition();
+    }
+
     public double getAbs()
     {
         return motor.getSensorCollection().getPulseWidthPosition();
@@ -88,10 +96,11 @@ public class HatchSystem extends Subsystem {
 
     public void moveInc(double diff) // Send in a positional difference in
     {
-        if (getAbs() > MAX && diff > 0)
-            diff = 0;
-        else if (getAbs() < MIN && diff < 0)
-            diff = 0;
+        if (limited)
+            if (getAbs() > (center + TO_MAX) && diff > 0)
+                diff = 0;
+            else if (getAbs() < (center - TO_MIN) && diff < 0)
+                diff = 0;
         
         SmartDashboard.putNumber("DIFF", diff);
         SmartDashboard.putNumber("RESPONSE", motor.getMotorOutputPercent());

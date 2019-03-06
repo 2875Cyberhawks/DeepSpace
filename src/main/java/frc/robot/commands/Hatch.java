@@ -41,6 +41,14 @@ public class Hatch extends Command {
         if (IO.toggleTilt())
             Robot.hs.toggleTilt();
 
+        if (IO.getCenterHatch())
+        {
+            if (!Robot.hs.limited)
+                Robot.hs.setCent();
+
+            Robot.hs.limited = !Robot.hs.limited;   
+        }
+
         Robot.hs.moveInc(HATCH_VEL * HatchSystem.FULL_TURN * IO.hatchAxis());
     }
 

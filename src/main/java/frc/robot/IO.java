@@ -162,4 +162,9 @@ public class IO
     {
         return mainJ.getRawButtonPressed(10);
     }
+
+    public static boolean getCenterHatch()
+    {
+        return false;
+    }
 }
