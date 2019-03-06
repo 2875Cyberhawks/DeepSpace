@@ -19,9 +19,11 @@ public class BallSystem extends Subsystem {
     private static final int[] DEVICE_NUMS = {1, 12}; // Turn, Lower
     public static final double FULL_TURN = 4096; // One full turn of the encoder
 
-    public static final double MIN = -3250, MAX = 800; // Forward, Straight, Back
+    public static final double MIN = -3250, MAX = 800; // Forward, BACK
+    public static final double TO_MAX = 100, TO_MIN = 100; // Distance from the max and min to the center
+    private double center = 600; // VALUE TO FIND
     public TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
-
+    public boolean limited = true;
     public double setpoint = 0;
 
     private Talon shoot = new Talon(DEVICE_NUMS[1]);
@@ -62,10 +64,12 @@ public class BallSystem extends Subsystem {
 
     public void moveInc(double diff) // Send in a positional difference in
     {
-        if (getAbs() > MAX && diff > 0)
-            diff = 0;
-        else if (getAbs() < MIN && diff < 0)
-            diff = 0;
+        if (limited)
+            if (getAbs() > (center + TO_MAX) && diff > 0)
+                diff = 0;
+            else if (getAbs() < (center - TO_MIN) && diff < 0)
+                diff = 0;
+        
         moveTo(setpoint + diff);
     }
 
@@ -73,6 +77,11 @@ public class BallSystem extends Subsystem {
     {
         //rotTal.set(ControlMode.MotionMagic, input);
         setpoint = input;
+    }
+
+    public double setCent()
+    {
+        return center = rotTal.getSelectedSensorPosition();
     }
 
     public void shoot(double speed)

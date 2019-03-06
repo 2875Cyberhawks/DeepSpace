@@ -35,12 +35,19 @@ public class Ball extends Command
         else
            Robot.bs.shoot(0);
 
-           SmartDashboard.putNumber("setpoint", Robot.bs.setpoint);
-           SmartDashboard.putNumber("total error", Robot.bs.rotTal.getClosedLoopError());
-           SmartDashboard.putNumber("rel pos", Robot.bs.rotTal.getSelectedSensorPosition());
-           SmartDashboard.putNumber("abs pos", Robot.bs.rotTal.getSensorCollection().getPulseWidthPosition());
-           SmartDashboard.putNumber("response", Robot.bs.rotTal.getMotorOutputPercent());
+        if (IO.getCenterHatch())
+        {
+            if (!Robot.bs.limited)
+                Robot.bs.setCent();
 
+            Robot.bs.limited = !Robot.bs.limited;   
+        }
+
+        SmartDashboard.putNumber("setpoint", Robot.bs.setpoint);
+        SmartDashboard.putNumber("total error", Robot.bs.rotTal.getClosedLoopError());
+        SmartDashboard.putNumber("rel pos", Robot.bs.rotTal.getSelectedSensorPosition());
+        SmartDashboard.putNumber("abs pos", Robot.bs.rotTal.getSensorCollection().getPulseWidthPosition());
+        SmartDashboard.putNumber("response", Robot.bs.rotTal.getMotorOutputPercent());
     }
     
     protected boolean isFinished() 

@@ -165,6 +165,11 @@ public class IO
 
     public static boolean getCenterHatch()
     {
-        return false;
+        return second.getBButton();
+    }
+
+    public static boolean getCenterBall()
+    {
+        return second.getAButton();
     }
 }

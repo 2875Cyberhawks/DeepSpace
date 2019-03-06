@@ -102,8 +102,8 @@ public class HatchSystem extends Subsystem {
             else if (getAbs() < (center - TO_MIN) && diff < 0)
                 diff = 0;
         
-        SmartDashboard.putNumber("DIFF", diff);
-        SmartDashboard.putNumber("RESPONSE", motor.getMotorOutputPercent());
+        SmartDashboard.putNumber("Hatch diff", diff);
+        SmartDashboard.putNumber("Hatch output", motor.getMotorOutputPercent());
         moveTo(setpoint + diff);
     }
 
