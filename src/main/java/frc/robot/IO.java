@@ -115,7 +115,7 @@ public class IO
 
     public static double hatchAxis()
     {
-        return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? -second.getY(Hand.kLeft) * HATCH_SCALE : 0;
+        return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? second.getY(Hand.kLeft) * HATCH_SCALE : 0;
     }
 
     public static boolean toggleHatch()

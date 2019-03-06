@@ -9,10 +9,8 @@ package frc.robot.subsystems;
 
 import frc.robot.commands.Hatch;
 
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
@@ -24,15 +22,16 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 // public class HatchSystem extends PIDSubsystem {
 public class HatchSystem extends Subsystem { 
 
-    private static final double P = .6;
-    private static final double I = .005;
-    private static final double D = .005;
+    private static final double P = 1.4;
+    private static final double I = .001;
+    private static final double D = 0;
 
     private static final int M_PORT = 2;
     private static final int[][] SOL_PORTS = {{0, 1},{2, 3}};
+
+    public static final double FULL_TURN = 4096;
     
-    public static final double MIN = -2200, MAX = 3160;
-    public static final double MAX_VOLTAGE = .4;
+    public static final double MIN = 3150, MAX = 8630;
 
     private TalonSRX motor = new TalonSRX(M_PORT);
 
@@ -40,12 +39,12 @@ public class HatchSystem extends Subsystem {
     
     private DoubleSolenoid tiltSol = new DoubleSolenoid(SOL_PORTS[1][0], SOL_PORTS[1][1]);
 
-    private double setpoint;
+    public double setpoint = 0;
     
     public HatchSystem() 
     {
-        openSol.set(Value.kOff);
-        tiltSol.set(Value.kOff);
+        openSol.set(Value.kReverse);
+        tiltSol.set(Value.kReverse);
         
         motor.configFactoryDefault();
 
@@ -63,6 +62,7 @@ public class HatchSystem extends Subsystem {
         motor.configPeakOutputForward(1);
         motor.configPeakOutputReverse(-1);
         motor.setIntegralAccumulator(0);
+        motor.config_IntegralZone(0, 60);
 
         motor.config_kP(0, P);
         motor.config_kI(0, I); 
@@ -92,6 +92,9 @@ public class HatchSystem extends Subsystem {
             diff = 0;
         else if (getAbs() < MIN && diff < 0)
             diff = 0;
+        
+        SmartDashboard.putNumber("DIFF", diff);
+        SmartDashboard.putNumber("RESPONSE", motor.getMotorOutputPercent());
         moveTo(setpoint + diff);
     }
 

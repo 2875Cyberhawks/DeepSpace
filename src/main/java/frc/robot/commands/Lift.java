@@ -34,6 +34,10 @@ public class Lift extends Command
 
         if (!Robot.ls.isInit)
             Robot.ls.moveToHeight(newHeight); // Move to the intended height
+        
+        SmartDashboard.putNumber("height", Robot.ls.getHeight());
+        SmartDashboard.putNumber("setpoint", Robot.ls.getSetpoint());
+        SmartDashboard.putBoolean("trig", !Robot.ls.rest.get());
     }
 
     // This command should always be running (There's no way off Paige's Wild Ride)

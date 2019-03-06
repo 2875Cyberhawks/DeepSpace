@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
+import frc.robot.subsystems.HatchSystem;
 import frc.robot.IO;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -18,6 +19,7 @@ public class Hatch extends Command {
     private static final double MIN_HEIGHT = 10;
     private static final double SAFE_ANGLE = 40;
     private static final double MAX_SPEED = .5;
+    private static final double HATCH_VEL = .005;
 
     public Hatch() 
     {
@@ -33,18 +35,18 @@ public class Hatch extends Command {
     
     protected void execute() 
     {
-
         if (IO.toggleHatch())
             Robot.hs.toggleHatch();
 
         if (IO.toggleTilt())
             Robot.hs.toggleTilt();
 
-        Robot.hs.setRot(-IO.hatchAxis() * MAX_SPEED);
+        Robot.hs.moveInc(HATCH_VEL * HatchSystem.FULL_TURN * IO.hatchAxis());
     }
 
     
-    protected boolean isFinished() {
+    protected boolean isFinished() 
+    {
         return false;
     }
 

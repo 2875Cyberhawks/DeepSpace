@@ -48,6 +48,8 @@ public class Robot extends TimedRobot
         startedAuto = true;
         gyro.reset();
         cam.init();
+        bs.setpoint = 0;
+        hs.setpoint = 0;
         ls.init();
     }
 

@@ -12,21 +12,17 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class BallSystem extends Subsystem {
 
-    private static final double P = 0;
-    private static final double I = 0;
+    private static final double P = 2;
+    private static final double I = .001;
     private static final double D = 0;
 
     private static final int[] DEVICE_NUMS = {1, 12}; // Turn, Lower
     public static final double FULL_TURN = 4096; // One full turn of the encoder
 
-    public static final double MIN = -3045, MAX = 600; // Forward, Straight, Back
-    private TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
+    public static final double MIN = -3250, MAX = 800; // Forward, Straight, Back
+    public TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
 
-    private double setpoint = 0;
-
-    private static final double MAX_VOLTAGE = .4;
-
-    private static final double MAX_TURN_SPEED = 1;
+    public double setpoint = 0;
 
     private Talon shoot = new Talon(DEVICE_NUMS[1]);
 
@@ -50,6 +46,7 @@ public class BallSystem extends Subsystem {
         rotTal.configPeakOutputForward(1);
         rotTal.configPeakOutputReverse(-1);
         rotTal.setIntegralAccumulator(0);
+        rotTal.config_IntegralZone(0, 75);
 
         rotTal.config_kP(0, P);
         rotTal.config_kI(0, I); 
@@ -74,7 +71,7 @@ public class BallSystem extends Subsystem {
 
     public void moveTo(double input)
     {
-        rotTal.set(ControlMode.MotionMagic, input);
+        //rotTal.set(ControlMode.MotionMagic, input);
         setpoint = input;
     }
 
