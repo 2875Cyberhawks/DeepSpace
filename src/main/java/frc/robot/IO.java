@@ -7,7 +7,7 @@ import frc.robot.util.Vector;
 
 public class IO
 {
-    private static final double TURN_MULT = .75;
+    private static final double TURN_MULT = .6;
 
     public static Joystick mainJ = new Joystick(0);
 
@@ -104,13 +104,6 @@ public class IO
             return -1;
         else
             return 0;
-
-        // if (backup.getRawButton(3))
-        //     return 1;
-        // else if (backup.getRawButton(2))
-        //     return -1;
-        // else 
-        //     return 0;
     }
 
     public static double hatchAxis()
@@ -165,11 +158,11 @@ public class IO
 
     public static boolean getCenterHatch()
     {
-        return second.getBButton();
+        return second.getBButtonPressed();
     }
 
     public static boolean getCenterBall()
     {
-        return second.getAButton();
+        return second.getAButtonPressed();
     }
 }

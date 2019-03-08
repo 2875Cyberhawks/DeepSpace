@@ -35,7 +35,7 @@ public class Ball extends Command
         else
            Robot.bs.shoot(0);
 
-        if (IO.getCenterHatch())
+        if (IO.getCenterBall())
         {
             if (!Robot.bs.limited)
                 Robot.bs.setCent();

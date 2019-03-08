@@ -25,7 +25,6 @@ public class Hatch extends Command {
     {
         requires(Robot.hs);
     }
-
     
     protected void initialize() 
     {

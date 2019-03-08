@@ -32,8 +32,8 @@ public class HatchSystem extends Subsystem {
     public static final double FULL_TURN = 4096;
     
     public static final double S_MIN = 3150, S_MAX = 8630; // No longer valid
-    public static final double TO_MIN = 20, TO_MAX = 20; // Distance from center point to min and max
-    private double center = 6000; // to be tuned
+    public static final double TO_MIN = 586, TO_MAX = 5081; // Distance from center point to min and max
+    private double center = 5043; // to be tuned
     public boolean limited = true; 
 
     private TalonSRX motor = new TalonSRX(M_PORT);
@@ -47,13 +47,14 @@ public class HatchSystem extends Subsystem {
     public HatchSystem() 
     {
         openSol.set(Value.kReverse);
-        tiltSol.set(Value.kReverse);
+        tiltSol.set(Value.kForward);
         
         motor.configFactoryDefault();
 
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        motor.setSelectedSensorPosition(0);
         
+        init();
+
         motor.configMotionCruiseVelocity(750);
         motor.configMotionAcceleration(1500);
     
@@ -73,6 +74,12 @@ public class HatchSystem extends Subsystem {
         motor.config_kF(0, 0);
     }
 
+    public void init()
+    {
+        setpoint = 0;
+        motor.setSelectedSensorPosition(0);
+    }
+
     public void setRot(double d)
     {
         motor.set(ControlMode.PercentOutput, d);
@@ -80,7 +87,7 @@ public class HatchSystem extends Subsystem {
 
     public double setCent()
     {
-        return center = motor.getSelectedSensorPosition();
+        return center = motor.getSensorCollection().getPulseWidthPosition();
     }
 
     public double getAbs()
@@ -102,8 +109,15 @@ public class HatchSystem extends Subsystem {
             else if (getAbs() < (center - TO_MIN) && diff < 0)
                 diff = 0;
         
-        SmartDashboard.putNumber("Hatch diff", diff);
-        SmartDashboard.putNumber("Hatch output", motor.getMotorOutputPercent());
+        SmartDashboard.putNumber("Hatch Diff", diff);
+        SmartDashboard.putNumber("Hatch Setpoint", setpoint);
+        SmartDashboard.putNumber("Hatch Rel Pos", motor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Hatch Abs Pos", motor.getSensorCollection().getPulseWidthPosition());
+        SmartDashboard.putNumber("Hatch Error", motor.getClosedLoopError());
+        SmartDashboard.putNumber("Hatch Out", motor.getMotorOutputPercent());
+        SmartDashboard.putNumber("Hatch Min", center - TO_MIN);
+        SmartDashboard.putNumber("Hatch Max", center + TO_MAX);
+        SmartDashboard.putNumber("Hatch Curr", motor.getOutputCurrent());
         moveTo(setpoint + diff);
     }
 

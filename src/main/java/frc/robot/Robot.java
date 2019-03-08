@@ -2,6 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.subsystems.*;
@@ -19,7 +22,7 @@ public class Robot extends TimedRobot
     public static LiftSystem ls;
     public static BallSystem bs;
     public static HatchSystem hs;
-    public static ClimbSystem cs;
+    // public static ClimbSystem cs;
 
     private boolean startedAuto = false;
 
@@ -32,12 +35,12 @@ public class Robot extends TimedRobot
 
         cam = new CamAlt(0, 1);
 
-        ds = new DriveSystem();
+        // ds = new DriveSystem();
         ls = new LiftSystem();
 
         hs = new HatchSystem();
         bs = new BallSystem();
-        cs = new ClimbSystem();
+        // cs = new ClimbSystem();
 
         System.out.println("Robot Starting");
     }
@@ -48,8 +51,8 @@ public class Robot extends TimedRobot
         startedAuto = true;
         gyro.reset();
         cam.init();
-        bs.setpoint = 0;
-        hs.setpoint = 0;
+        bs.init();
+        hs.init();
         ls.init();
     }
 
@@ -62,6 +65,8 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit() 
     {
+        bs.init();
+        hs.init();
         if (!startedAuto)
             autonomousInit();
     }
@@ -73,7 +78,7 @@ public class Robot extends TimedRobot
         if (IO.switchCamera())
             cam.toggle();
 
-        Scheduler.getInstance().run(); // Run all the commands as specified by the scheduler
+        Scheduler.getInstance().run();
     }
     
     public static double getAngle()

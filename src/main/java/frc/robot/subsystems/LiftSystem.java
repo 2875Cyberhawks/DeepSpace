@@ -5,7 +5,7 @@ import frc.robot.commands.Lift;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,26 +15,25 @@ public class LiftSystem extends PIDSubsystem
 {
     // The P, I and D constants
     private static final double P = .65;
-    private static final double I = 0;
+    private static final double I = .0065;
     private static final double D = 0;
 
     // The maximum speed
     private static final double MAX_SPD = .7;
 
     // The ports for the Spark motorcontrollers
-    private static final int[] MOTOR_PORTS = {9, 8};
+    private static final int MOTOR_PORT = 9;
 
-    // The ports for the encoders
+    // The ports for the encoder
     private static final int[] ENC_PORTS = {2, 3};
 
     // The ports for the limit switches
     private static final int[] LIMIT_PORTS = {7, 8, 9}; // min, rest, max
 
+    private Spark motor;
+
     // The encoder for tracking the height of the lift
     private Encoder encoder;
-   
-    // The motor(s)? that move the lift
-    private SpeedControllerGroup motors;
 
     // The minimum height the lift should reach
     private static final double MIN_HEIGHT = -3;
@@ -48,15 +47,21 @@ public class LiftSystem extends PIDSubsystem
     public boolean climbMode = false;
     public DigitalInput min, rest, max;
 
+    private boolean inRest;
+
     public boolean isInit;
     public Timer initTime;
-    public static final double MAX_TIME_INIT = 5;
-    public static final double JUMP_DISTANCE = 4;
-        
+    public static final double MAX_TIME_INIT = 6;
+    public static final double JUMP_DISTANCE = 8;
+
+    private boolean startedPass = false;
+
     public LiftSystem() 
     {
         // Tell the superclass the PID values
         super(P, I, D);
+
+        inRest = false;
 
         // The input should only be on this range
         setInputRange(MIN_HEIGHT, MAX_HEIGHT);
@@ -68,17 +73,18 @@ public class LiftSystem extends PIDSubsystem
         encoder.setDistancePerPulse(DISTANCE_PER_PULSE); // Set distance per pulse 
 
         // Create the SpeedControllerGroup
-        motors = new SpeedControllerGroup(new Spark(MOTOR_PORTS[0]), new Spark(MOTOR_PORTS[1]));
-       
+        motor = new Spark(MOTOR_PORT);
+
         // Create the Limit Switches
         min = new DigitalInput(LIMIT_PORTS[0]);
         rest = new DigitalInput(LIMIT_PORTS[1]);
         max = new DigitalInput(LIMIT_PORTS[2]);
+
+        SmartDashboard.putString("Ended by", "NOT");
     }
 
     public void init() 
     {
-        System.out.println("Limit Starting");
         encoder.reset();
         setSetpoint(JUMP_DISTANCE);
 
@@ -97,58 +103,70 @@ public class LiftSystem extends PIDSubsystem
     @Override
     protected double returnPIDInput() 
     {
-        // The input to the PID loop is the current height
-        SmartDashboard.putNumber("Real Height", getHeight());
         return getHeight();
     }
 
     @Override
     protected void usePIDOutput(double output) 
-    {
+    {   
         if (isInit)
         {
-            if (!rest.get())
+            if (!startedPass && !rest.get())
+                startedPass = true;
+
+            if (rest.get() && startedPass)
+            {
                 isInit = false;
+                SmartDashboard.putString("Ended by", "SWITCH");
+            }
 
             if (initTime.get() > MAX_TIME_INIT)
             {
                 isInit = false;
-                System.out.println("end by time");
+                SmartDashboard.putString("Ended by", "TIME");
             }
 
             if (!isInit)
             {
+                System.out.println("Encoder reset");
                 encoder.reset();
                 setSetpoint(getHeight());
-                // motors.set(0);
+                motor.set(0);
                 return;
             }
         }
 
         if (getSetpoint() > getHeight() && !max.get())
         {
+            System.out.println("Max triggered");
             setSetpoint(getHeight());
             return;
         }
         else if (getSetpoint() < getHeight() && !min.get())
         {
+            System.out.println("Min triggered");
             setSetpoint(getHeight());
             return;
         }
         else if (getSetpoint() < getHeight() && !rest.get() && !climbMode)
         {
-            setSetpoint(getHeight());
-            encoder.reset();
+            SmartDashboard.putBoolean("Rest trigger", true);
+            if (!inRest)
+                encoder.reset();
+            inRest = true;
+            setSetpoint(0);
             return;
         }
+        else
+            inRest = false;
 
         // The output of the PID loop should be the motor's speed
         if (output > MAX_SPD)
-            motors.set(MAX_SPD);
+            motor.set(MAX_SPD);
         else if (output < -MAX_SPD)
-            motors.set(-MAX_SPD);
+            motor.set(-MAX_SPD);
         else
-            motors.set(output);
+            motor.set(output);
     }
 
     // Move to a given height (double)
@@ -184,14 +202,13 @@ public class LiftSystem extends PIDSubsystem
     public void disable()
     {
         super.disable();
-        // motors.set(0);
+        // motor.set(0);
     }
 
     // Free all of the HAL objects
     public void free()
     {
         super.free();
-        motors.free();
         encoder.free();
     }
 

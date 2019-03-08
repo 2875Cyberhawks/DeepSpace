@@ -19,9 +19,9 @@ public class BallSystem extends Subsystem {
     private static final int[] DEVICE_NUMS = {1, 12}; // Turn, Lower
     public static final double FULL_TURN = 4096; // One full turn of the encoder
 
-    public static final double MIN = -3250, MAX = 800; // Forward, BACK
-    public static final double TO_MAX = 100, TO_MIN = 100; // Distance from the max and min to the center
-    private double center = 600; // VALUE TO FIND
+    // public static final double MIN = -3250, MAX = 800; // Forward, BACK
+    public static final double TO_MAX = 744, TO_MIN = 3168; // Distance from the max and min to the center
+    private double center = -51;
     public TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
     public boolean limited = true;
     public double setpoint = 0;
@@ -35,7 +35,7 @@ public class BallSystem extends Subsystem {
         rotTal.configFactoryDefault();
 
         rotTal.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        rotTal.setSelectedSensorPosition(0);
+        init();
         
         rotTal.configMotionCruiseVelocity(750);
         rotTal.configMotionAcceleration(1500);
@@ -62,6 +62,12 @@ public class BallSystem extends Subsystem {
         setDefaultCommand(new Ball());    
     }
 
+    public void init()
+    {
+        setpoint = 0;
+        rotTal.setSelectedSensorPosition(0);
+    }
+
     public void moveInc(double diff) // Send in a positional difference in
     {
         if (limited)
@@ -70,18 +76,29 @@ public class BallSystem extends Subsystem {
             else if (getAbs() < (center - TO_MIN) && diff < 0)
                 diff = 0;
         
+        SmartDashboard.putNumber("Ball Diff", diff);
+        SmartDashboard.putNumber("Ball Setpoint", setpoint);
+        SmartDashboard.putNumber("Ball Rel Pos", rotTal.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Ball Abs Pos", rotTal.getSensorCollection().getPulseWidthPosition());
+        SmartDashboard.putNumber("Ball Error", rotTal.getClosedLoopError());
+        SmartDashboard.putNumber("Ball Out", rotTal.getMotorOutputPercent());
+        SmartDashboard.putBoolean("Ball lim", limited);
+        SmartDashboard.putNumber("Ball Cent", center);
+        SmartDashboard.putNumber("Ball Min", center - TO_MIN);
+        SmartDashboard.putNumber("Ball Max", center + TO_MAX);
+        SmartDashboard.putNumber("Ball Curr", rotTal.getOutputCurrent());
         moveTo(setpoint + diff);
     }
 
     public void moveTo(double input)
     {
-        //rotTal.set(ControlMode.MotionMagic, input);
+        rotTal.set(ControlMode.MotionMagic, input);
         setpoint = input;
     }
 
     public double setCent()
     {
-        return center = rotTal.getSelectedSensorPosition();
+        return center = rotTal.getSensorCollection().getPulseWidthPosition();
     }
 
     public void shoot(double speed)

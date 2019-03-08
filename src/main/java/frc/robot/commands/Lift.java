@@ -9,7 +9,7 @@ import frc.robot.Robot;
 public class Lift extends Command 
 {
     // The max speed of the lift in (encoder-units/tick)
-    private static final double LIFT_SPEED = .15; 
+    private static final double LIFT_SPEED = .25; 
 
     public Lift() 
     {
@@ -29,15 +29,16 @@ public class Lift extends Command
     protected void execute() 
     {
         double newHeight = Robot.ls.getSetpoint() + (LIFT_SPEED * IO.lift()); // The intended height
-        SmartDashboard.putNumber("Lift", IO.lift());
-        SmartDashboard.putNumber("Setpoint", Robot.ls.getSetpoint());
+        SmartDashboard.putNumber("Lift Input", IO.lift());
+        SmartDashboard.putNumber("Lift Setpoint", Robot.ls.getSetpoint());
+        SmartDashboard.putNumber("Lift Error", Robot.ls.getPIDController().getError());
 
         if (!Robot.ls.isInit)
             Robot.ls.moveToHeight(newHeight); // Move to the intended height
         
-        SmartDashboard.putNumber("height", Robot.ls.getHeight());
-        SmartDashboard.putNumber("setpoint", Robot.ls.getSetpoint());
-        SmartDashboard.putBoolean("trig", !Robot.ls.rest.get());
+        SmartDashboard.putNumber("Lift Height", Robot.ls.getHeight());
+        SmartDashboard.putBoolean("Lift RestSwitch", !Robot.ls.rest.get());
+        SmartDashboard.putBoolean("Is init", Robot.ls.isInit);
     }
 
     // This command should always be running (There's no way off Paige's Wild Ride)
