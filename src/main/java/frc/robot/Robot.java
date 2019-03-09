@@ -2,9 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.subsystems.*;
@@ -35,7 +33,7 @@ public class Robot extends TimedRobot
 
         cam = new CamAlt(0, 1);
 
-        // ds = new DriveSystem();
+        ds = new DriveSystem();
         ls = new LiftSystem();
 
         hs = new HatchSystem();

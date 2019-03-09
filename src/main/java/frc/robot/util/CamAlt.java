@@ -20,8 +20,14 @@ public class CamAlt
     public void init()
     {
         cam0 = CameraServer.getInstance().startAutomaticCapture(ports[0]);
+        cam0.setBrightness(10);
+        System.out.println(cam0.setFPS(15) ? "Cam 0 FPS" : "Cam 0 no FPS");
+        System.out.println(cam0.setResolution(160, 120) ? "Cam 0 res" : "Cam 0 no res");
         cam1 = CameraServer.getInstance().startAutomaticCapture(ports[1]);
-
+        cam1.setBrightness(15);
+        System.out.println(cam1.setFPS(15) ? "Cam 1 FPS" : "Cam 1 no FPS");
+        System.out.println(cam1.setResolution(160, 120) ? "Cam 1 res" : "Cam 1 no res");
+        
         setCam(cam0);
     }
 

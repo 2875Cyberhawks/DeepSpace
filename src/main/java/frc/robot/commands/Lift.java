@@ -32,12 +32,14 @@ public class Lift extends Command
         SmartDashboard.putNumber("Lift Input", IO.lift());
         SmartDashboard.putNumber("Lift Setpoint", Robot.ls.getSetpoint());
         SmartDashboard.putNumber("Lift Error", Robot.ls.getPIDController().getError());
-
-        if (!Robot.ls.isInit)
+    
+        if (!Robot.ls.isInit) {
             Robot.ls.moveToHeight(newHeight); // Move to the intended height
-        
+            if (IO.manualClimb())
+                Robot.ls.climbMode = true;
+        }
         SmartDashboard.putNumber("Lift Height", Robot.ls.getHeight());
-        SmartDashboard.putBoolean("Lift RestSwitch", !Robot.ls.rest.get());
+        SmartDashboard.putBoolean("Lift Climb", Robot.ls.climbMode);
         SmartDashboard.putBoolean("Is init", Robot.ls.isInit);
     }
 

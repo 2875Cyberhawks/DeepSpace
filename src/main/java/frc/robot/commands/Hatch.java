@@ -19,7 +19,7 @@ public class Hatch extends Command {
     private static final double MIN_HEIGHT = 10;
     private static final double SAFE_ANGLE = 40;
     private static final double MAX_SPEED = .5;
-    private static final double HATCH_VEL = .005;
+    private static final double HATCH_VEL = .0075;
 
     public Hatch() 
     {

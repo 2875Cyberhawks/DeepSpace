@@ -36,7 +36,7 @@ public class LiftSystem extends PIDSubsystem
     private Encoder encoder;
 
     // The minimum height the lift should reach
-    private static final double MIN_HEIGHT = -3;
+    private static final double MIN_HEIGHT = -7;
 
     // The maximum height the lift should reach
     private static final double MAX_HEIGHT = 55;
@@ -136,6 +136,7 @@ public class LiftSystem extends PIDSubsystem
             }
         }
 
+        SmartDashboard.putBoolean("TRIGGERING REST", false);
         if (getSetpoint() > getHeight() && !max.get())
         {
             System.out.println("Max triggered");
@@ -150,7 +151,7 @@ public class LiftSystem extends PIDSubsystem
         }
         else if (getSetpoint() < getHeight() && !rest.get() && !climbMode)
         {
-            SmartDashboard.putBoolean("Rest trigger", true);
+            SmartDashboard.putBoolean("TRIGGERING REST", true);
             if (!inRest)
                 encoder.reset();
             inRest = true;

@@ -23,7 +23,7 @@ public class IO
 
     private static final double HATCH_SCALE = 1;
     private static final double BALL_SCALE = 1;
-    private static final double INTAKE_SCALE = .4;
+    private static final double INTAKE_SCALE = .8;
     private static final double CLIMB_WHEEL_SPEED = .6;
 
     public static double z()
@@ -83,7 +83,7 @@ public class IO
 
     public static boolean getReset()
     {
-        return mainJ.getRawButtonPressed(7);
+        return mainJ.getRawButtonPressed(8);
     }
 
     public static Joystick getJoy()
@@ -164,5 +164,10 @@ public class IO
     public static boolean getCenterBall()
     {
         return second.getAButtonPressed();
+    }
+
+    public static boolean manualClimb()
+    {
+        return second.getStartButtonPressed();
     }
 }
