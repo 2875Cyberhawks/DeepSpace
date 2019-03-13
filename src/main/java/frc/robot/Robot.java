@@ -19,7 +19,7 @@ public class Robot extends TimedRobot
     public static DriveSystem ds;
     public static LiftSystem ls;
     public static BallSystem bs;
-    // public static HatchSystem hs;
+    public static HatchSystem hs;
     // public static ClimbSystem cs;
 
     private boolean startedAuto = false;
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot
         ds = new DriveSystem();
         ls = new LiftSystem();
 
-        // hs = new HatchSystem();
+        hs = new HatchSystem();
         bs = new BallSystem();
         // cs = new ClimbSystem();
 
@@ -50,7 +50,7 @@ public class Robot extends TimedRobot
         gyro.reset();
         cam.init();
         bs.init();
-        // hs.init();
+        hs.init();
         ls.init();
     }
 
@@ -64,7 +64,7 @@ public class Robot extends TimedRobot
     public void teleopInit() 
     {
         bs.init();
-        // hs.init();
+        hs.init();
         if (!startedAuto)
             autonomousInit();
     }
