@@ -54,6 +54,7 @@ public class DriveSystem extends Subsystem {
             { new PIDController(P[1][0], I[1][0], D[1][0], encoders[1][0], turnSparks[1][0]),
                     new PIDController(P[1][1], I[1][1], D[1][1], encoders[1][1], turnSparks[1][1]) } };
 
+    public boolean fieldCentric = false;
 
     public DriveSystem()
     {

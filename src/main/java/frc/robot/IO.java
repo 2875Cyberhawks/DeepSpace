@@ -170,4 +170,9 @@ public class IO
     {
         return second.getStartButtonPressed();
     }
+
+    public static boolean getCentric()
+    {
+        return mainJ.getRawButtonPressed(7);
+    }
 }

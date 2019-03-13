@@ -74,15 +74,20 @@ public class Drive extends Command
     protected void execute()
     {
         if (IO.getReset()) // If reset putton pushed
+            reset();
+
+        if (IO.getCentric())
         {
-            Robot.gyro.reset(); // Reset the gyro
-            Robot.ds.lastAngle = 0; // The last intended angle is 0
+            Robot.ds.fieldCentric = !Robot.ds.fieldCentric;
+            if (Robot.ds.fieldCentric)
+                reset();
         }
 
         double gyAng = Robot.getAngle(); // Angle of the gyroscope
 
         Vector trans = IO.trans();
-        trans.setAngle(-gyAng + trans.getAngle());
+        if (Robot.ds.fieldCentric)
+            trans.setAngle(-gyAng + trans.getAngle());
         trans.circlify();
 
         double rMag = IO.z();
@@ -115,6 +120,12 @@ public class Drive extends Command
                     totals[i][j].scale(1 / max);
 
         Robot.ds.setVects(totals);
+    }
+
+    protected void reset()
+    {
+        Robot.gyro.reset(); // Reset the gyro
+        Robot.ds.lastAngle = 0; // The last intended angle is 0
     }
  
     // Make this return true when this Command no longer needs to run execute()
