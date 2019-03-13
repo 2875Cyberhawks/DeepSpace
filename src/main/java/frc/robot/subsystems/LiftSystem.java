@@ -21,7 +21,7 @@ public class LiftSystem extends PIDSubsystem
     // The maximum speed
     private static final double MAX_SPD = .7;
 
-    // The ports for the Spark motorcontrollers
+        // The ports for the Spark motorcontrollers
     private static final int MOTOR_PORT = 9;
 
     // The ports for the encoder
@@ -36,7 +36,7 @@ public class LiftSystem extends PIDSubsystem
     private Encoder encoder;
 
     // The minimum height the lift should reach
-    private static final double MIN_HEIGHT = -7;
+    private static final double MIN_HEIGHT = -14;
 
     // The maximum height the lift should reach
     private static final double MAX_HEIGHT = 55;

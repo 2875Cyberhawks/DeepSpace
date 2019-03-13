@@ -39,8 +39,8 @@ public class DriveSystem extends Subsystem {
 
     private static final int[][] ENC_PORTS = { { 1, 0 }, { 3, 2 } }; // Ports of the encoders
 
-    private static final double[][] AVG_OFF = { { -0.3027141205832563, -0.02606189311184315},
-                                                { 1.003883850457414, -0.7130228173596729} }; 
+    private static final double[][] AVG_OFF = { { -.5, -0.02606189311184315},
+                                                { 1.003883850457414, -0.7130228173596729} };
 
     public double lastAngle = 0; // The last angle considered 'intentional'
 
