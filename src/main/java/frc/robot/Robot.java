@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.subsystems.*;
@@ -23,6 +25,7 @@ public class Robot extends TimedRobot
 
     private boolean startedAuto = false;
 
+    SendableChooser<Boolean> startChooser;
     // On robot startup:
     @Override
     public void robotInit()
@@ -40,17 +43,27 @@ public class Robot extends TimedRobot
         // cs = new ClimbSystem();
 
         System.out.println("Robot Starting");
+
+        startChooser = new SendableChooser<Boolean>();
+        startChooser.setDefaultOption("Starting hatch", false);
+        startChooser.addOption("Starting ball", true);
+    }
+
+    public void commonInit()
+    {
+        bs.init();
+        hs.init();
     }
 
     @Override
     public void autonomousInit() 
     {
+        ds.shootStart = (boolean) startChooser.getSelected();
         startedAuto = true;
         gyro.reset();
         cam.init();
-        bs.init();
-        hs.init();
         ls.init();
+        commonInit();
     }
 
     @Override
@@ -62,8 +75,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit() 
     {
-        bs.init();
-        hs.init();
+        commonInit();
         if (!startedAuto)
             autonomousInit();
     }

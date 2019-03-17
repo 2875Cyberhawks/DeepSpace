@@ -73,22 +73,21 @@ public class Drive extends Command
     @Override
     protected void execute()
     {
-        if (IO.getReset()) // If reset putton pushed
+        if (IO.getReset())
             reset();
 
         if (IO.getCentric())
-        {
             Robot.ds.fieldCentric = !Robot.ds.fieldCentric;
-            if (Robot.ds.fieldCentric)
-                reset();
-        }
 
         double gyAng = Robot.getAngle(); // Angle of the gyroscope
 
         Vector trans = IO.trans();
-        if (Robot.ds.fieldCentric)
-            trans.setAngle(-gyAng + trans.getAngle());
         trans.circlify();
+        trans.setAngle(trans.getAngle() 
+            + (Robot.ds.fieldCentric ? -gyAng : 0)
+            + (Robot.ds.shootStart ? 180 : 0));
+        
+        
 
         double rMag = IO.z();
 
