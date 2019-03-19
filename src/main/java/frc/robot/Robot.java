@@ -50,7 +50,6 @@ public class Robot extends TimedRobot
         gyro.reset();
         cam.init();
         bs.init();
-        hs.init();
         ls.init();
     }
 
@@ -64,7 +63,6 @@ public class Robot extends TimedRobot
     public void teleopInit() 
     {
         bs.init();
-        hs.init();
         if (!startedAuto)
             autonomousInit();
     }

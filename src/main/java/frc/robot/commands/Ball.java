@@ -26,28 +26,12 @@ public class Ball extends Command
     
     protected void execute() 
     {
-        Robot.bs.moveInc(IO.ballAxis() * TURN_VEL * BallSystem.FULL_TURN);
-
         if (IO.intakeBall() > 0)
             Robot.bs.shoot(IO.intakeBall());
         else if (IO.shootBall() > 0)
             Robot.bs.shoot(-IO.shootBall());
         else
            Robot.bs.shoot(0);
-
-        if (IO.getCenterBall())
-        {
-            if (!Robot.bs.limited)
-                Robot.bs.setCent();
-
-            Robot.bs.limited = !Robot.bs.limited;   
-        }
-
-        SmartDashboard.putNumber("setpoint", Robot.bs.setpoint);
-        SmartDashboard.putNumber("total error", Robot.bs.rotTal.getClosedLoopError());
-        SmartDashboard.putNumber("rel pos", Robot.bs.rotTal.getSelectedSensorPosition());
-        SmartDashboard.putNumber("abs pos", Robot.bs.rotTal.getSensorCollection().getPulseWidthPosition());
-        SmartDashboard.putNumber("response", Robot.bs.rotTal.getMotorOutputPercent());
     }
     
     protected boolean isFinished() 
