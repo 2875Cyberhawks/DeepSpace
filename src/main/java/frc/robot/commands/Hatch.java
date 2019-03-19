@@ -20,7 +20,7 @@ public class Hatch extends Command {
     private static final double SAFE_ANGLE = 40;
     private static final double MAX_SPEED = .5;
     private static final double HATCH_VEL = .0075;
-
+    public static final double CURRENT = 5;
     public Hatch() 
     {
         requires(Robot.hs);
@@ -34,12 +34,13 @@ public class Hatch extends Command {
     
     protected void execute() 
     {
-        if (IO.toggleHatch())
-            Robot.hs.toggleHatch();
+        if (IO.hatchIntake() && Robot.hs.getCurrent()>5)
+            Robot.hs.setSpeed(1);        
+       if (IO.hatchOutput())
+           Robot.hs.setSpeed(-1);
 
-        if (IO.toggleTilt())
-            Robot.hs.toggleTilt();
-
+        if (IO.thrust())
+            Robot.hs.thrust();   
         if (IO.getCenterHatch())
         {
             if (!Robot.hs.limited)
@@ -47,8 +48,6 @@ public class Hatch extends Command {
 
             Robot.hs.limited = !Robot.hs.limited;   
         }
-
-        Robot.hs.moveInc(HATCH_VEL * HatchSystem.FULL_TURN * IO.hatchAxis());
     }
 
     

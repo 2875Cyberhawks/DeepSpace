@@ -36,18 +36,17 @@ public class HatchSystem extends Subsystem {
     private double center = 2156; // to be tuned
     public boolean limited = true; 
 
-    private TalonSRX motor = new TalonSRX(M_PORT);
+    public static final double CURRENT = 5;
 
-    private DoubleSolenoid openSol = new DoubleSolenoid(SOL_PORTS[0][0], SOL_PORTS[0][1]);
+    private TalonSRX motor = new TalonSRX(M_Port);
     
-    private DoubleSolenoid tiltSol = new DoubleSolenoid(SOL_PORTS[1][0], SOL_PORTS[1][1]);
+    private DoubleSolenoid thrustSol = new DoubleSolenoid(SOL_PORTS[0][0], SOL_PORTS[0][1]);
 
     public double setpoint = 0;
     
     public HatchSystem() 
     {
-        openSol.set(Value.kReverse);
-        tiltSol.set(Value.kForward);
+        thrustSol.set(Value.kReverse);
         
         motor.configFactoryDefault();
 
@@ -127,20 +126,34 @@ public class HatchSystem extends Subsystem {
         setpoint = input;
     }
 
-    public void toggleHatch()
+    public void hatchIntake()
     {
-        openSol.set(openSol.get() == Value.kForward ? Value.kReverse : Value.kForward);
+        if (motor.getOutputCurrent() > CURRENT)
+            motor.set(ControlMode.PercentOutput, 0);
+        else
+            motor.set(ControlMode.PercentOutput,1);
     }
 
-    public void toggleTilt()
+    public void hatchOutput()
     {
-        tiltSol.set(tiltSol.get() == Value.kForward ? Value.kReverse : Value.kForward);
+        if (motor.getOutputCurrent() > CURRENT)
+            motor.set(ControlMode.PercentOutput, 0);
+        else
+            motor.set(ControlMode.PercentOutput,-1);
     }
+
+    public void thrust()
+    {
+        if(thrustSol.get() == Value.kForward)
+            thrustSol.set(Value.kReverse);
+        else
+            thrustSol.set(Value.kForward);
+    }
+
 
     public void disable()
     {
-        openSol.close();
-        tiltSol.close();
+        thrustSol.close();
         motor.set(ControlMode.PercentOutput, 0);
     }
 }
