@@ -111,14 +111,19 @@ public class IO
         return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? second.getY(Hand.kLeft) * HATCH_SCALE : 0;
     }
 
-    public static boolean toggleHatch()
+    public static boolean hatchIntake()
     {
-        return  second.getYButtonPressed();
+        return  second.getBumperPressed(Hand.kLeft);
     }
 
-    public static boolean toggleTilt()
+    public static boolean hatchOutput()
     {
-        return second.getXButtonPressed();
+        return second.getBumperPressed(Hand.kRight);
+    }
+
+    public static boolean thrust()
+    {
+        return second.getYButtonPressed();
     }
 
     public static double ballAxis()
@@ -135,6 +140,7 @@ public class IO
     {
         return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
     }
+
 
     public static double climbWheels()
     {
