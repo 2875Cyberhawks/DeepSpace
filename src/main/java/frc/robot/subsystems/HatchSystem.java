@@ -23,7 +23,6 @@ public class HatchSystem extends Subsystem {
 
     private static final int M_PORT = 2;
     private static final int[][] SOL_PORTS = {{0, 1},{2, 3}};
-    public boolean limited = true; 
 
     private TalonSRX motor = new TalonSRX(M_PORT);
     
