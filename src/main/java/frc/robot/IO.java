@@ -106,21 +106,6 @@ public class IO
             return 0;
     }
 
-    public static double hatchAxis()
-    {
-        return Math.abs(second.getY(Hand.kLeft)) > IN_DEAD ? second.getY(Hand.kLeft) * HATCH_SCALE : 0;
-    }
-
-    public static boolean toggleHatch()
-    {
-        return  second.getYButtonPressed();
-    }
-
-    public static boolean toggleTilt()
-    {
-        return second.getXButtonPressed();
-    }
-
     public static double ballAxis()
     {
         return Math.abs(second.getY(Hand.kRight)) > IN_DEAD ? -second.getY(Hand.kRight) * BALL_SCALE : 0;
@@ -134,6 +119,16 @@ public class IO
     public static double shootBall()
     {
         return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
+    }
+
+    public static double intakeHatch()
+    {
+        return second.getBumper(Hand.kLeft) ? 1 : 0;
+    }
+
+    public static double shootHatch()
+    {
+        return second.getBumper(Hand.kRight) ? 1 : 0;
     }
 
     public static double climbWheels()
@@ -154,16 +149,6 @@ public class IO
     public static boolean switchCamera()
     {
         return mainJ.getRawButtonPressed(10);
-    }
-
-    public static boolean getCenterHatch()
-    {
-        return second.getBButtonPressed();
-    }
-
-    public static boolean getCenterBall()
-    {
-        return second.getAButtonPressed();
     }
 
     public static boolean manualClimb()

@@ -87,8 +87,6 @@ public class Drive extends Command
             + (Robot.ds.fieldCentric ? -gyAng : 0)
             + (Robot.ds.shootStart ? 180 : 0));
         
-        
-
         double rMag = IO.z();
 
         Vector[][] rots; // The magnitude of the rotational velocity vector

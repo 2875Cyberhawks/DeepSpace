@@ -23,7 +23,7 @@ public class BallSystem extends Subsystem {
     public static final double TO_MAX = 744, TO_MIN = 3168; // Distance from the max and min to the center
     private double center = -51;
     public TalonSRX rotTal = new TalonSRX(DEVICE_NUMS[0]);
-    public boolean limited = true;
+    public boolean limited = false;
     public double setpoint = 0;
 
     private Talon shoot = new Talon(DEVICE_NUMS[1]);

@@ -35,14 +35,6 @@ public class Ball extends Command
         else
            Robot.bs.shoot(0);
 
-        if (IO.getCenterBall())
-        {
-            if (!Robot.bs.limited)
-                Robot.bs.setCent();
-
-            Robot.bs.limited = !Robot.bs.limited;   
-        }
-
         SmartDashboard.putNumber("setpoint", Robot.bs.setpoint);
         SmartDashboard.putNumber("total error", Robot.bs.rotTal.getClosedLoopError());
         SmartDashboard.putNumber("rel pos", Robot.bs.rotTal.getSelectedSensorPosition());
