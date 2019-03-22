@@ -11,6 +11,8 @@ import frc.robot.commands.Hatch;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -19,10 +21,15 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class HatchSystem extends Subsystem { 
 
     private static final int M_PORT = 2; // 1 on test bot
-    private static final int SOL_PORT = 0;
+    private static final int[] SOL_PORT = {2, 3};
 
     private TalonSRX motor = new TalonSRX(M_PORT);
-    private Solenoid thrustSol = new Solenoid(SOL_PORT);
+    private DoubleSolenoid thrustSol = new DoubleSolenoid(SOL_PORT[0], SOL_PORT[1]);
+
+    public HatchSystem()
+    {
+        thrustSol.set(Value.kForward);
+    }
 
     public void setRot(double d)
     {
@@ -52,7 +59,7 @@ public class HatchSystem extends Subsystem {
 
     public void toggleSol()
     {
-        thrustSol.set(!thrustSol.get());
+        thrustSol.set(thrustSol.get() == Value.kForward ? Value.kReverse : Value.kForward);
     }
 
     public void disable()
