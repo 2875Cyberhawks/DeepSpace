@@ -26,6 +26,7 @@ public class Robot extends TimedRobot
     private boolean startedAuto = false;
 
     SendableChooser<Boolean> startChooser;
+    
     // On robot startup:
     @Override
     public void robotInit()
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot
         startChooser = new SendableChooser<Boolean>();
         startChooser.setDefaultOption("Starting hatch", false);
         startChooser.addOption("Starting ball", true);
+        SmartDashboard.putData(startChooser);
     }
 
     public void commonInit()
