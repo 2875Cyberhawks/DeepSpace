@@ -69,11 +69,13 @@ public class Hatch extends Command {
         return false;
     }
     
-    protected void end() {
+    protected void end() 
+    {
         Robot.hs.disable();
     }
     
-    protected void interrupted() {
+    protected void interrupted() 
+    {
         Robot.hs.disable();
     }
 }

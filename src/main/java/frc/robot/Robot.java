@@ -82,13 +82,10 @@ public class Robot extends TimedRobot
         double gyAng = gyro.getAngle();
 
         while (gyAng < -180)
-        {
             gyAng += 360;
-        }
+        
         while (gyAng > 180)
-        {
             gyAng -= 360;
-        }
 
         return gyAng;
     }
