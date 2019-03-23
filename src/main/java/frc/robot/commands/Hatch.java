@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hatch extends Command {
     
-    public static final double CURRENT = 3;
+    public static final double CURRENT = 5;
     private static final double[] MOT_SPD = {.6, 1};
     private boolean backed = false;
     private boolean wasBacking = false;
@@ -44,8 +44,8 @@ public class Hatch extends Command {
             if (Robot.hs.getCurrent() > CURRENT)
                 backed = true;
             
-            // Robot.hs.setSpeed(!backed ? -MOT_SPD[0] * time.get() : 0);
-            Robot.hs.setSpeed(-MOT_SPD[0]);
+            Robot.hs.setSpeed(!backed ? -MOT_SPD[0] * time.get() : 0);
+            // Robot.hs.setSpeed(-MOT_SPD[0]);
             wasBacking = true;
         }
         else if (IO.hatchOutput())
