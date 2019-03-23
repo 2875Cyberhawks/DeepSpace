@@ -106,6 +106,21 @@ public class IO
             return 0;
     }
 
+    public static boolean hatchIntake()
+    {
+        return  second.getBumperPressed(Hand.kLeft);
+    }
+
+    public static boolean hatchOutput()
+    {
+        return second.getBumperPressed(Hand.kRight);
+    }
+
+    public static boolean thrust()
+    {
+        return second.getYButtonPressed();
+    }
+
     public static double ballAxis()
     {
         return Math.abs(second.getY(Hand.kRight)) > IN_DEAD ? -second.getY(Hand.kRight) * BALL_SCALE : 0;

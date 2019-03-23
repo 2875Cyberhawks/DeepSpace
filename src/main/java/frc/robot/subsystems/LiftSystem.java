@@ -39,7 +39,7 @@ public class LiftSystem extends PIDSubsystem
     private static final double MIN_HEIGHT = -14;
 
     // The maximum height the lift should reach
-    private static final double MAX_HEIGHT = 55;
+    private static final double MAX_HEIGHT = 65;
 
     // Constant of proportionality between the number of encoder pulses and inches
     private static final double DISTANCE_PER_PULSE = (12.0 / 577.0);
@@ -56,7 +56,7 @@ public class LiftSystem extends PIDSubsystem
 
     private boolean startedPass = false;
 
-    public LiftSystem() 
+    public LiftSystem()
     {
         // Tell the superclass the PID values
         super(P, I, D);

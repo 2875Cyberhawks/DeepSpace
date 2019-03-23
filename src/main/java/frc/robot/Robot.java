@@ -54,7 +54,6 @@ public class Robot extends TimedRobot
     public void commonInit()
     {
         bs.init();
-        hs.init();
     }
 
     @Override
@@ -64,6 +63,7 @@ public class Robot extends TimedRobot
         startedAuto = true;
         gyro.reset();
         cam.init();
+        bs.init();
         ls.init();
         commonInit();
     }
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit() 
     {
-        commonInit();
+        bs.init();
         if (!startedAuto)
             autonomousInit();
     }
@@ -97,13 +97,10 @@ public class Robot extends TimedRobot
         double gyAng = gyro.getAngle();
 
         while (gyAng < -180)
-        {
             gyAng += 360;
-        }
+        
         while (gyAng > 180)
-        {
             gyAng -= 360;
-        }
 
         return gyAng;
     }

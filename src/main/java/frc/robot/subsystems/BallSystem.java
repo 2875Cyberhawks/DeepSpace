@@ -30,8 +30,6 @@ public class BallSystem extends Subsystem {
 
     public BallSystem() 
     {
-        shoot.set(0);
-
         rotTal.configFactoryDefault();
 
         rotTal.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -103,6 +101,7 @@ public class BallSystem extends Subsystem {
 
     public void shoot(double speed)
     {
+        SmartDashboard.putNumber("ShooterSetTo", speed);
         shoot.set(speed);
     }
 

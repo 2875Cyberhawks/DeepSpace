@@ -8,46 +8,79 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.HatchSystem;
 import frc.robot.IO;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hatch extends Command {
     
-    private static final double MIN_HEIGHT = 10;
-    private static final double SAFE_ANGLE = 40;
-    private static final double MAX_SPEED = .5;
-    private static final double HATCH_VEL = .0075;
+    public static final double CURRENT = 3;
+    private static final double[] MOT_SPD = {.6, 1};
+    private boolean backed = false;
+    private boolean wasBacking = false;
+    private static final double MAX_TIME = 1;
+    private Timer time = new Timer();
 
     public Hatch() 
     {
         requires(Robot.hs);
     }
     
-    protected void initialize() 
+    protected void execute() 
     {
-        ;;
+        if (IO.hatchIntake())
+        {
+            if (!wasBacking)
+            {
+                time.start();
+                time.reset();
+            }
+
+            if (time.get() > MAX_TIME)
+                time.stop();
+
+            if (Robot.hs.getCurrent() > CURRENT)
+                backed = true;
+            
+            // Robot.hs.setSpeed(!backed ? -MOT_SPD[0] * time.get() : 0);
+            Robot.hs.setSpeed(-MOT_SPD[0]);
+            wasBacking = true;
+        }
+        else if (IO.hatchOutput())
+        {
+            wasBacking = false;
+            backed = false;
+            Robot.hs.setSpeed(MOT_SPD[1]);
+        }
+        else
+        {
+            wasBacking = false;
+            backed = false;
+            Robot.hs.setSpeed(0);
+        }
+
+        SmartDashboard.putNumber("Runtime", time.get());
+        SmartDashboard.putBoolean("BACKED", backed);
+        SmartDashboard.putBoolean("WASB", wasBacking);
+
+        if (IO.thrust())
+            Robot.hs.toggleSol();
     }
 
-    
-    protected void execute() 
-    {}
-
-    
     protected boolean isFinished() 
     {
         return false;
     }
-
     
-    protected void end() {
+    protected void end() 
+    {
         Robot.hs.disable();
     }
-
     
-    protected void interrupted() {
+    protected void interrupted() 
+    {
         Robot.hs.disable();
     }
 }
