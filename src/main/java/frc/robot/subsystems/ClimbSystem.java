@@ -1,39 +1,49 @@
 // package frc.robot.subsystems;
-
+// 
 // import frc.robot.commands.Climb;
-
+// 
 // import edu.wpi.first.wpilibj.command.Subsystem;
 // import edu.wpi.first.wpilibj.Spark;
 // import edu.wpi.first.wpilibj.Solenoid;
-
-// public class ClimbSystem extends Subsystem
+// import edu.wpi.first.wpilibj.DoubleSolenoid;
+// 
+// public class DuelSolClimb extends Subsystem
 // {
- 
+// 
 //     private static final int MOT_PORT = 10; // 0 on expansion board
-//     private static final int SOL_PORT = 1;
-
+//     private static final int SOL_PORTS[] = {1, 2}; // First two for doubleSol, second for single sol
+// 
 //     private Spark motor = new Spark(MOT_PORT);
-
-//     private Solenoid sol = new Solenoid(SOL_PORT);
-
+// 
+//     private DoubleSolenoid lockSol = new DoubleSolenoid(SOL_PORT[0],
+//                                                         SOL_PORT[1]);
+// 
+//     private Solenoid lowSol = new Solenoid(SOL_PORT[2]);
+// 
 //     public void initDefaultCommand()
 //     {
 //         setDefaultCommand(new Climb());
 //     }
-
+// 
 //     public void setMotor(double speed)
 //     {
 //         motor.set(speed);
 //     }
-
-//     public void toggleSol()
+// 
+//     public void toggleLock()
 //     {
-//         sol.set(!sol.get());
+//         lockSol.set(!sol.get());
 //     }
-
+// 
+//     public void toggleLow()
+//     {
+//         lockSol.set(!lockSol.get());
+//     }
+// 
 //     public void disable()
 //     {
 //         motor.set(0);
-//         sol.free();
+//         lockSol.free();
+//         lowSol.free();
 //     }
 // }
