@@ -23,7 +23,7 @@ public class Climb extends Command {
         Robot.cs.setMotor(IO.climbWheels());
          
         if (IO.toggleClimb())
-            Robot.cs.toggleSol();
+            Robot.cs.toggleLock();
     }
  
     protected boolean isFinished() {
