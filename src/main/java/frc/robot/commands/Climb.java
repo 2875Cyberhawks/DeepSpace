@@ -19,12 +19,11 @@ public class Climb extends Command {
     protected void execute() {
         if (DriverStation.getInstance().getMatchTime() < 20)
             Robot.ls.climbMode = true;
-     
+
         Robot.cs.setMotor(IO.climbWheels());
          
-        if (IO.toggleClimb()) {
+        if (IO.toggleClimb())
             Robot.cs.toggleSol();
-        }
     }
  
     protected boolean isFinished() {
