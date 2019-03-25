@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hatch extends Command {
-    
     public static final double CURRENT = 5;
     private static final double[] MOT_SPD = {.6, 1};
     private boolean backed = false;
@@ -27,10 +26,10 @@ public class Hatch extends Command {
     {
         requires(Robot.hs);
     }
-    
+
     protected void execute() 
     {
-        if (IO.hatchIntake())
+        if (IO.intakeHatch())
         {
             if (!wasBacking)
             {
@@ -48,7 +47,7 @@ public class Hatch extends Command {
             // Robot.hs.setSpeed(-MOT_SPD[0]);
             wasBacking = true;
         }
-        else if (IO.hatchOutput())
+        else if (IO.shootHatch())
         {
             wasBacking = false;
             backed = false;
@@ -64,6 +63,7 @@ public class Hatch extends Command {
         SmartDashboard.putNumber("Runtime", time.get());
         SmartDashboard.putBoolean("BACKED", backed);
         SmartDashboard.putBoolean("WASB", wasBacking);
+        SmartDashboard.putNumber("Current",Robot.hs.getCurrent());
 
         if (IO.thrust())
             Robot.hs.toggleSol();

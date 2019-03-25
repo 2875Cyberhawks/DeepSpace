@@ -51,8 +51,8 @@ public class LiftSystem extends PIDSubsystem
 
     public boolean isInit;
     public Timer initTime;
-    public static final double MAX_TIME_INIT = 6;
-    public static final double JUMP_DISTANCE = 8;
+    public static final double MAX_TIME_INIT = 4;
+    public static final double JUMP_DISTANCE = 6;
 
     private boolean startedPass = false;
 
@@ -108,13 +108,14 @@ public class LiftSystem extends PIDSubsystem
 
     @Override
     protected void usePIDOutput(double output) 
-    {   
+    {  
+        SmartDashboard.putBoolean("Hatch Position", !rest.get());
         if (isInit)
         {
-            if (!startedPass && !rest.get())
-                startedPass = true;
+            // if (!startedPass && !rest.get())
+            //     startedPass = true;
 
-            if (rest.get() && startedPass)
+            if (!rest.get()/* && startedPass*/)
             {
                 isInit = false;
                 SmartDashboard.putString("Ended by", "SWITCH");
@@ -149,15 +150,15 @@ public class LiftSystem extends PIDSubsystem
             setSetpoint(getHeight());
             return;
         }
-        else if (getSetpoint() < getHeight() && !rest.get() && !climbMode)
-        {
-            SmartDashboard.putBoolean("TRIGGERING REST", true);
-            if (!inRest)
-                encoder.reset();
-            inRest = true;
-            setSetpoint(0);
-            return;
-        }
+        // else if (getSetpoint() < getHeight() && !rest.get() && !climbMode)
+        // {
+        //     SmartDashboard.putBoolean("TRIGGERING REST", true);
+        //     // if (!inRest)
+        //     //     encoder.reset();
+        //     // inRest = true;
+        //     // // setSetpoint(0);
+        //     return;
+        // }
         else
             inRest = false;
 

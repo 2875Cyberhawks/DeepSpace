@@ -106,16 +106,6 @@ public class IO
             return 0;
     }
 
-    public static boolean hatchIntake()
-    {
-        return  second.getBumperPressed(Hand.kLeft);
-    }
-
-    public static boolean hatchOutput()
-    {
-        return second.getBumperPressed(Hand.kRight);
-    }
-
     public static boolean thrust()
     {
         return second.getYButtonPressed();
@@ -136,14 +126,14 @@ public class IO
         return second.getTriggerAxis(Hand.kRight) > IN_DEAD ? second.getTriggerAxis(Hand.kRight) : 0;
     }
 
-    public static double intakeHatch()
+    public static boolean intakeHatch()
     {
-        return second.getBumper(Hand.kLeft) ? 1 : 0;
+        return second.getBumper(Hand.kLeft);
     }
 
-    public static double shootHatch()
+    public static boolean shootHatch()
     {
-        return second.getBumper(Hand.kRight) ? 1 : 0;
+        return second.getBumper(Hand.kRight);
     }
 
     public static double climbWheels()

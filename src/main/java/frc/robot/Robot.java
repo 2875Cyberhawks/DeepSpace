@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.SPI;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import frc.robot.subsystems.*;
 import frc.robot.util.CamAlt;
 
@@ -41,7 +44,7 @@ public class Robot extends TimedRobot
 
         hs = new HatchSystem();
         bs = new BallSystem();
-        cs = new ClimbSystem();
+        // cs = new ClimbSystem();
 
         System.out.println("Robot Starting");
 
