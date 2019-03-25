@@ -37,7 +37,8 @@ public class Robot extends TimedRobot
         gyro = new AHRS(SPI.Port.kMXP);
         gyro.reset();
 
-        cam = new CamAlt(0, 1);
+        int[] cPorts = {0, 1, 2};
+        cam = new CamAlt(cPorts);
 
         ds = new DriveSystem();
         ls = new LiftSystem();
@@ -65,7 +66,6 @@ public class Robot extends TimedRobot
         ds.shootStart = (boolean) startChooser.getSelected();
         startedAuto = true;
         gyro.reset();
-        cam.init();
         bs.init();
         ls.init();
         commonInit();
@@ -89,8 +89,10 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic()
     {
-        if (IO.switchCamera())
-            cam.toggle();
+        if (IO.incCam())
+            cam.inc();
+        else if (IO.decCam())
+            cam.dec();
 
         Scheduler.getInstance().run();
     }

@@ -151,9 +151,14 @@ public class IO
         return mainJ.getRawButtonPressed(9);
     }
 
-    public static boolean switchCamera()
+    public static boolean incCam()
     {
         return mainJ.getRawButtonPressed(10);
+    }
+
+    public static boolean decCam()
+    {
+        return mainJ.getRawButtonPressed(9);
     }
 
     public static boolean manualClimb()

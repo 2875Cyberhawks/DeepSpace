@@ -7,35 +7,31 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 // Camera Alternator
 public class CamAlt
 {
-    boolean onCam0 = true; // Defaults on camera 0
-    UsbCamera cam0, cam1;
-    int[] ports = new int[2];
+    private int camNum = 0; // Defaults on camera 0
+    private UsbCamera[] cams;
 
-    public CamAlt(int c0Port, int c1Port)
+    public CamAlt(int[] cPorts)
     {
-        ports[0] = c0Port;
-        ports[1] = c1Port;
+        for (int i = 0; i < cPorts.length; i++)
+        {
+            cams[i] = CameraServer.getInstance().startAutomaticCapture(i);
+            cams[i].setBrightness(10);
+            System.out.println(cams[i].setFPS(10) ? "Cam "+i+" FPS" : "Cam "+i+" no FPS");
+            System.out.println(cams[i].setResolution(160, 120) ? "Cam "+i+" res" : "Cam "+i+" no res");
+        }
+        setCam(cams[0]);
     }
 
-    public void init()
+    public void inc()
     {
-        cam0 = CameraServer.getInstance().startAutomaticCapture(ports[0]);
-        cam0.setBrightness(10);
-        System.out.println(cam0.setFPS(10) ? "Cam 0 FPS" : "Cam 0 no FPS");
-        System.out.println(cam0.setResolution(160, 120) ? "Cam 0 res" : "Cam 0 no res");
-        cam1 = CameraServer.getInstance().startAutomaticCapture(ports[1]);
-        cam1.setBrightness(15);
-        System.out.println(cam1.setFPS(10) ? "Cam 1 FPS" : "Cam 1 no FPS");
-        System.out.println(cam1.setResolution(160, 120) ? "Cam 1 res" : "Cam 1 no res");
-        
-        setCam(cam0);
+        if (camNum < cams.length-1)
+            setCam(cams[++camNum]);
     }
 
-    public void toggle()
+    public void dec()
     {
-        onCam0 = !onCam0;
-
-        setCam(onCam0 ? cam0 : cam1);
+        if (camNum > 0)
+            setCam(cams[--camNum]);
     }
 
     public static void setCam(UsbCamera c)
