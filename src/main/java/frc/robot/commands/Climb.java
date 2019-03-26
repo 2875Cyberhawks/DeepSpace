@@ -16,7 +16,8 @@ public class Climb extends Command {
         Robot.cs.setMotor(0);
     }
  
-    protected void execute() {
+    protected void execute()
+    {
         if (DriverStation.getInstance().getMatchTime() < 20)
             Robot.ls.climbMode = true;
 

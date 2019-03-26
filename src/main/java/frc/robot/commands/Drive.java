@@ -79,8 +79,8 @@ public class Drive extends Command
         if (IO.getCentric())
             Robot.ds.fieldCentric = !Robot.ds.fieldCentric;
 
-        if (IO.toggleStart())
-            Robot.ds.shootStart = !Robot.ds.shootStart;
+        // if (IO.toggleStart())
+        //     Robot.ds.shootStart = !Robot.ds.shootStart;
         
         SmartDashboard.putBoolean("FieldCentric", Robot.ds.fieldCentric);
 
