@@ -168,11 +168,12 @@ public class IO
 
     public static boolean getCentric()
     {
-        return mainJ.getRawButtonPressed(11);
+        return mainJ.getRawButtonPressed(7);
     }
 
     public static boolean toggleStart()
     {
-        return mainJ.getRawButtonPressed(12);
+        return false;
+        //return mainJ.getRawButtonPressed(12);
     }
 }
