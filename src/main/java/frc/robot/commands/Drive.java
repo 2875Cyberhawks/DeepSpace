@@ -79,6 +79,9 @@ public class Drive extends Command
         if (IO.getCentric())
             Robot.ds.fieldCentric = !Robot.ds.fieldCentric;
 
+        if (IO.toggleStart())
+            Robot.ds.shootStart = !Robot.ds.shootStart;
+        
         SmartDashboard.putBoolean("FieldCentric", Robot.ds.fieldCentric);
 
         double gyAng = Robot.getAngle(); // Angle of the gyroscope

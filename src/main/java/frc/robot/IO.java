@@ -138,9 +138,9 @@ public class IO
 
     public static double climbWheels()
     {
-        if (mainJ.getRawButtonPressed(11))
+        if (mainJ.getRawButtonPressed(3))
             return CLIMB_WHEEL_SPEED;
-        else if (mainJ.getRawButtonPressed(12))
+        else if (mainJ.getRawButtonPressed(4))
             return -CLIMB_WHEEL_SPEED;
         else
             return 0;
@@ -148,7 +148,7 @@ public class IO
 
     public static boolean toggleClimb()
     {
-        return mainJ.getRawButtonPressed(9);
+        return mainJ.getRawButtonPressed(6);
     }
 
     public static boolean incCam()
@@ -168,6 +168,11 @@ public class IO
 
     public static boolean getCentric()
     {
-        return mainJ.getRawButtonPressed(7);
+        return mainJ.getRawButtonPressed(11);
+    }
+
+    public static boolean toggleStart()
+    {
+        return mainJ.getRawButtonPressed(12);
     }
 }

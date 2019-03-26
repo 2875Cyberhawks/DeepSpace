@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hatch extends Command {
     public static final double CURRENT = 5;
-    private static final double[] MOT_SPD = {.6, 1};
+    private static final double[] MOT_SPD = {.6, .7};
     private boolean backed = false;
     private boolean wasBacking = false;
     private static final double MAX_TIME = 1;

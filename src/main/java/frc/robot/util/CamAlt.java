@@ -10,8 +10,9 @@ public class CamAlt
     private int camNum = 0; // Defaults on camera 0
     private UsbCamera[] cams;
 
-    public CamAlt(int[] cPorts)
+   public CamAlt(int[] cPorts)
     {
+        cams = new UsbCamera[cPorts.length];
         for (int i = 0; i < cPorts.length; i++)
         {
             cams[i] = CameraServer.getInstance().startAutomaticCapture(i);
@@ -24,14 +25,14 @@ public class CamAlt
 
     public void inc()
     {
-        if (camNum < cams.length-1)
-            setCam(cams[++camNum]);
+        camNum = ++camNum > cams.length-1 ? 0 : camNum;
+        setCam(cams[camNum]);
     }
 
     public void dec()
     {
-        if (camNum > 0)
-            setCam(cams[--camNum]);
+        camNum = --camNum < 0 ? cams.length-1 : camNum;
+        setCam(cams[camNum]);
     }
 
     public static void setCam(UsbCamera c)
