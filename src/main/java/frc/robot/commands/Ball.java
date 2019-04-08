@@ -12,7 +12,7 @@ public class Ball extends Command
     private static final double MIN_HEIGHT = 10;
     private static final double SAFE_ANGLE = 20;
     private static final double MAX_BALL_SPEED = .0001;
-    private static final double TURN_VEL = .0055;
+    private static final double TURN_VEL = .013;
 
     public Ball() 
     {

@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.Timer;
 public class LiftSystem extends PIDSubsystem 
 {
     // The P, I and D constants
-    private static final double P = .65;
-    private static final double I = .0065;
+    private static final double P = .1;// .65;
+    private static final double I = 0;// .0065;
     private static final double D = 0;
 
     // The maximum speed
